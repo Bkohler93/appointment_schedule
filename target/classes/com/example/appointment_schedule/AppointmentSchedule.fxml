@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.appointment_schedule.controller.AppointmentScheduleController">
+<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.appointment_schedule.controller.AppointmentScheduleController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -27,8 +27,13 @@
                   <Font size="18.0" />
                </font>
                <VBox.margin>
-                  <Insets bottom="20.0" top="15.0" />
+                  <Insets bottom="10.0" top="15.0" />
                </VBox.margin>
+            </Text>
+            <Text fx:id="upcomingAptNotificationText" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointment Schedule">
+               <font>
+                  <Font size="12.0" />
+               </font>
             </Text>
             <HBox alignment="CENTER_LEFT">
                <children>
@@ -43,7 +48,7 @@
                         <Insets right="8.0" />
                      </HBox.margin>
                   </Button>
-                  <Label fx:id="selectedTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefWidth="100.0" text="Dec 2023" textAlignment="CENTER" />
+                  <Label fx:id="selectedTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefWidth="150.0" text="Dec 2023" textAlignment="CENTER" />
                   <Button mnemonicParsing="false" onAction="#onActionNextViewButton" text="&gt;">
                      <HBox.margin>
                         <Insets left="8.0" />
@@ -104,7 +109,7 @@
                      </HBox.margin>
                   </TextField>
                   <TextField fx:id="timeEndInputTextField" prefWidth="50.0" promptText="23:59" />
-                  <Button mnemonicParsing="false" text="Save" fx:id="adjustAppointmentSaveButton" onAction="#onActionAdjustAppointmentSaveButton">
+                  <Button fx:id="adjustAppointmentSaveButton" mnemonicParsing="false" onAction="#onActionAdjustAppointmentSaveButton" text="Save">
                      <HBox.margin>
                         <Insets left="30.0" />
                      </HBox.margin>

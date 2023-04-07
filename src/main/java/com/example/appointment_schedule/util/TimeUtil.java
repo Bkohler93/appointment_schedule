@@ -31,7 +31,6 @@ public class TimeUtil {
         Time businessEnd = Time.valueOf("03:00:00");
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
-        System.out.println(timeFormat.format(proposedValidStart.getTime()));
         Time validStartTimeUTC = Time.valueOf(timeFormat.format(proposedValidStart.getTime()));
         Time validEndTimeUTC =Time.valueOf(timeFormat.format(proposedValidEnd.getTime()));
         Time invalidStartTimeUTC = Time.valueOf(timeFormat.format(proposedInvalidStart.getTime()));
@@ -77,8 +76,8 @@ public class TimeUtil {
 
     /**
      * Accepts a date and a time and converts them into a UTC Timestamp. Parameters must be set as system default time.
-     * @param date date to convert
-     * @param time time to convert
+     * @param date date to convert formatted `yyyy/MM/dd`
+     * @param time time to convert formatted `hh:mm`
      * @return Timestamp in UTC
      */
     public static Timestamp formValueToTimestamp(String date, String time) {
@@ -199,5 +198,11 @@ public class TimeUtil {
     public static boolean areDatesBetween(Time start, Time end, Time requiredStart, Time requiredEnd) {
 
         return start.after(requiredStart) && end.before(requiredEnd);
+    }
+
+    public static Timestamp zonedToUTCTimestamp(ZonedDateTime now) {
+        ZonedDateTime nowUTC = now.withZoneSameInstant(ZoneId.of("UTC"));
+        LocalDateTime nowUTCLocal = nowUTC.toLocalDateTime();
+        return Timestamp.valueOf(nowUTCLocal);
     }
 }

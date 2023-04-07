@@ -3,10 +3,12 @@ package com.example.appointment_schedule.util;
 
 import com.example.appointment_schedule.Main;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -35,6 +37,24 @@ public class FxUtil {
         });
         newStage.setOnCloseRequest(windowEvent -> stage.show());
         newStage.show();
+    }
+
+    /**
+     * Recursive algorithm to clear any errors/notifications in the UI whenever the user types a key in a form field
+     * @param node node to check if currently a TextField, in which a setOnKeyTyped method is applied. Otherwise, the
+     *             method traverses through the nodes until a TextField is found. Any non-parent nodes that are not
+     *             TextFields will execute no code.
+     */
+    public static void applyEventHandlersToTextFields(Node node, Text infoDisplayText) {
+        if (node instanceof TextField textField) {
+            textField.setOnKeyTyped(event -> {
+                FxUtil.clearInfoDisplayText(infoDisplayText);
+            });
+        } else if (node instanceof Parent parent) {
+            for (Node child : parent.getChildrenUnmodifiable()) {
+                applyEventHandlersToTextFields(child, infoDisplayText);
+            }
+        }
     }
 
     /**

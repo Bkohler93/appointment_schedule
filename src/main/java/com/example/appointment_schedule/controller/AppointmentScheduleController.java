@@ -17,6 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -41,6 +42,8 @@ public class AppointmentScheduleController implements Initializable {
     private final AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
     private final ContactDAO contactDAO = new ContactDAOImpl();
     public Button adjustAppointmentSaveButton;
+    public AnchorPane anchorPane;
+    public Text upcomingAptNotificationText;
     @FXML
     private Button cancelButton;
     @FXML
@@ -151,6 +154,24 @@ public class AppointmentScheduleController implements Initializable {
             throw new RuntimeException(e);
         }
 
+        Appointment upcomingAppointment = null;
+        try {
+            upcomingAppointment = appointmentDAO.getUpcomingAppointment();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        if (upcomingAppointment == null) {
+            upcomingAptNotificationText.setText("No upcoming appointments");
+        } else {
+            Timestamp start = upcomingAppointment.getStart();
+            int id = upcomingAppointment.getId();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            String dateStart = dateFormat.format(start);
+            String timeStart = timeFormat.format(start);
+            upcomingAptNotificationText.setText("Upcoming appointment[" + id + "] at " + dateStart + " " + timeStart);
+        }
+
         appointmentTableView.setOnMouseClicked(event -> {
             adjustAppointmentSaveButton.setDisable(true);
             Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
@@ -194,6 +215,7 @@ public class AppointmentScheduleController implements Initializable {
             }
         });
 
+
         timeStartInputTextField.setOnKeyTyped(keyEvent -> { onKeyTypedDateTimeTextField(); });
         timeEndInputTextField.setOnKeyTyped(keyEvent -> { onKeyTypedDateTimeTextField(); });
         dateStartInputTextField.setOnKeyTyped(keyEvent -> { onKeyTypedDateTimeTextField(); });
@@ -202,6 +224,7 @@ public class AppointmentScheduleController implements Initializable {
     }
 
     private void onKeyTypedDateTimeTextField() {
+        clearInfoDisplayText(infoDisplayText);
         Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
         if (appointment == null) { return; }
 
@@ -217,9 +240,6 @@ public class AppointmentScheduleController implements Initializable {
 
         Timestamp timestampStart = TimeUtil.formValueToTimestamp(dateStart, timeStart);
         Timestamp timestampEnd = TimeUtil.formValueToTimestamp(dateEnd, timeEnd);
-
-        System.out.println(timestampStart + "\t" + timestampEnd);
-        System.out.println(appointment.getStart() + "\t" + appointment.getEnd());
 
         // disable button if all adjust date/times are same as currently selected appointment.
         adjustAppointmentSaveButton.setDisable(timestampStart.equals(appointment.getStart()) && timestampEnd.equals(appointment.getEnd()));
@@ -388,7 +408,19 @@ public class AppointmentScheduleController implements Initializable {
             return;
         }
 
+
         Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
+        if (appointment == null) {
+            if (appointmentDAO.hasOverlappingAppointments(timestampStart, timestampEnd)) {
+                FxUtil.displayInfoDisplayText("The proposed appointment time conflicts with other appointments.", true, infoDisplayText);
+                return;
+            }
+        } else {
+            if (appointmentDAO.hasOverlappingAppointments(timestampStart, timestampEnd, appointment)) {
+                FxUtil.displayInfoDisplayText("The proposed appointment time conflicts with other appointments.", true, infoDisplayText);
+                return;
+            }
+        }
 
         Appointment updatedAppointment = new Appointment(appointment.getId(), appointment.getTitle(), appointment.getDescription(), appointment.getLocation(), appointment.getType(),
                 timestampStart, timestampEnd, appointment.getCreateDate(), appointment.getCreatedBy(), appointment.getLastUpdate(), appointment.getLastUpdatedBy(), appointment.getCustomerId(),

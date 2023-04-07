@@ -30,6 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import com.example.appointment_schedule.util.FxUtil;
+
 public class AppointmentController implements Initializable {
     public TextField typeTextField;
     public TextField startDateTextField;
@@ -79,23 +81,7 @@ public class AppointmentController implements Initializable {
 //        fillForm();
     }
 
-    /**
-     * Recursive algorithm to clear any errors/notifications in the UI whenever the user types a key in a form field
-     * @param node node to check if currently a TextField, in which a setOnKeyTyped method is applied. Otherwise, the
-     *             method traverses through the nodes until a TextField is found. Any non-parent nodes that are not
-     *             TextFields will execute no code.
-     */
-    private void applyEventHandlersToTextFields(Node node) {
-        if (node instanceof TextField textField) {
-            textField.setOnKeyTyped(event -> {
-                FxUtil.clearInfoDisplayText(infoDisplayText);
-            });
-        } else if (node instanceof Parent parent) {
-            for (Node child : parent.getChildrenUnmodifiable()) {
-                applyEventHandlersToTextFields(child);
-            }
-        }
-    }
+
 
 
     /**
@@ -222,7 +208,7 @@ public class AppointmentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            applyEventHandlersToTextFields(formContainerVBox);
+            FxUtil.applyEventHandlersToTextFields(formContainerVBox, infoDisplayText);
             fillForm();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -234,6 +220,11 @@ public class AppointmentController implements Initializable {
         stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
+    /**
+     * Uses Appointment.fxml's TextFields to create an appointment saves the new/updated appointment.
+     * @param actionEvent event sent from pressing Save Button on Appointment.fxml
+     * @throws SQLException thrown by appointmentDAO
+     */
     public void onActionSaveButton(ActionEvent actionEvent) throws SQLException {
         int id = Integer.parseInt(idTextField.getText());
         String title = titleTextField.getText();
@@ -264,9 +255,24 @@ public class AppointmentController implements Initializable {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         String startTimeEST = timeFormat.format(startEST.getTime());
         String endTimeEST = timeFormat.format(endEST.getTime());
+
+        // check if proposed appointment times conflict with business hours
         if (!TimeUtil.areDatesBetween(Time.valueOf(startTimeEST),Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
             FxUtil.displayInfoDisplayText("One or more proposed appointment times are outside of business hours (8am-10pm EST).", true, infoDisplayText);
             return;
+        }
+
+        // check if proposed appointment times conflict with other appointment times (exclude modifying appointment if there is one)
+        if (appointment == null) {
+            if (appointmentDAO.hasOverlappingAppointments(start, end)) {
+                FxUtil.displayInfoDisplayText("The proposed appointment time conflicts with other appointments.", true, infoDisplayText);
+                return;
+            }
+        } else {
+            if (appointmentDAO.hasOverlappingAppointments(start, end, appointment)) {
+                FxUtil.displayInfoDisplayText("The proposed appointment time conflicts with other appointments.", true, infoDisplayText);
+                return;
+            }
         }
 
         String createdBy = createdByTextField.getText();

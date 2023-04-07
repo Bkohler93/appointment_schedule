@@ -11,6 +11,10 @@ import javafx.collections.ObservableList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 public class AppointmentDAOImpl implements AppointmentDAO {
     private final ObservableList<Appointment> appointments = FXCollections.observableArrayList();
@@ -39,13 +43,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
      */
     @Override
     public ObservableList<Appointment> getAllCustomerAppointments(Customer customer) throws SQLException {
-//        String sql = "select * from Appointments where Customer_ID = " + customer.getId();
-//        Query.makeQuery(sql);
         return appointments.filtered(a -> a.getCustomerId() == customer.getId());
-//        appointments.clear();
-//        ResultSet result = Query.getResult();
-//        fillAppointments(result);
-//        return appointments;
     }
 
     /**
@@ -119,6 +117,72 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         Query.makeQuery(sql);
 
         appointments.add(appointment);
+    }
+
+    /**
+     * checks whether the database has any appointments with a `start` or `end` that falls between `startDateTime`/`endDateTime`.
+     * @param startDateTime start time to check for conflict (must be UTC).
+     * @param endDateTime end time to check for conflict (must be UTC).
+     * @return true if the proposed `startDateTime` / `endDateTime` conflicts with any other appointment, false if not.
+     */
+    @Override
+    public boolean hasOverlappingAppointments(Timestamp startDateTime, Timestamp endDateTime) throws SQLException {
+        String sql = "select * from Appointments where (Start between '" + startDateTime + "' and '" + endDateTime + "') " +
+                "or  (End between '" + startDateTime + "' and '" + endDateTime + "')";
+        Query.makeQuery(sql);
+
+        ResultSet resultSet = Query.getResult();
+        return resultSet.next();
+    }
+
+    /**
+     * checks whether the database has any appointments with a `start` or `end` that falls between `startDateTime`/`endDateTime`.
+     * Excludes appointment that matches `appointmentToExclude`'s ID.
+     * @param startDateTime start time to check for conflict (must be UTC).
+     * @param endDateTime end time to check for conflicts (must be UTC).
+     * @param appointmentToExclude appointment to exclude in check for conflicts
+     * @return true if no appointments conflict with proposed times, false if not.
+     * @throws SQLException thrown by AppointmentDAO from invalid SQL syntax.
+     */
+    @Override
+    public boolean hasOverlappingAppointments(Timestamp startDateTime, Timestamp endDateTime, Appointment appointmentToExclude) throws SQLException {
+        String sql = "select * from Appointments where ((Start between '" + startDateTime + "' and '" + endDateTime + "') " +
+                "or  (End between '" + startDateTime + "' and '" + endDateTime + "')) and Appointment_ID != " + appointmentToExclude.getId();
+        Query.makeQuery(sql);
+
+        ResultSet resultSet = Query.getResult();
+        return resultSet.next();
+    }
+
+    @Override
+    public Appointment getUpcomingAppointment() throws SQLException {
+        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime nowPlusFifteenMin = now.plusMinutes(15);
+        Timestamp nowTimestampUTC = TimeUtil.zonedToUTCTimestamp(now);
+        Timestamp nowPlusFifteenTimestampUTC = TimeUtil.zonedToUTCTimestamp(nowPlusFifteenMin);
+
+        String sql = "select * from Appointments where (Start between '" + nowTimestampUTC + "' and '" + nowPlusFifteenTimestampUTC + "')";
+        Query.makeQuery(sql);
+
+        ResultSet result = Query.getResult();
+        if (result.next()) {
+            int id = result.getInt("Appointment_ID");
+            String title = result.getString("Title");
+            String description = result.getString("Description");
+            String location = result.getString("Location");
+            String type = result.getString("Type");
+            Timestamp start  = result.getTimestamp("Start");
+            Timestamp end  = result.getTimestamp("End");
+            Timestamp createDate  = result.getTimestamp("Create_Date");
+            String createdBy  = result.getString("Created_By");
+            Timestamp lastUpdate = result.getTimestamp("Last_Update");
+            String lastUpdatedBy = result.getString("Last_Updated_By");
+            int customerId = result.getInt("Customer_ID");
+            int userId = result.getInt("User_ID");
+            int contactId = result.getInt("Contact_ID");
+            return new Appointment(id, title, description, location, type, start, end, createDate, createdBy, lastUpdate, lastUpdatedBy, customerId, userId, contactId);
+        }
+        return null;
     }
 
     /**
