@@ -1,5 +1,6 @@
 package com.example.appointment_schedule.controller;
 
+import com.example.appointment_schedule.Constants;
 import com.example.appointment_schedule.Main;
 import com.example.appointment_schedule.dao.appointment.AppointmentDAO;
 import com.example.appointment_schedule.dao.appointment.AppointmentDAOImpl;
@@ -22,6 +23,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -375,6 +377,16 @@ public class AppointmentScheduleController implements Initializable {
 
         Timestamp timestampStart = TimeUtil.formValueToUTCTimestamp(dateStart, timeStart);
         Timestamp timestampEnd = TimeUtil.formValueToUTCTimestamp(dateEnd, timeEnd);
+
+        Timestamp startEST = TimeUtil.formValueToESTTimestamp(dateStart, timeStart);
+        Timestamp endEST = TimeUtil.formValueToESTTimestamp(dateEnd, timeEnd);
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        String startTimeEST = timeFormat.format(startEST.getTime());
+        String endTimeEST = timeFormat.format(endEST.getTime());
+        if (!TimeUtil.areDatesBetween(Time.valueOf(startTimeEST),Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
+            FxUtil.displayInfoDisplayText("One or more proposed appointment times are outside of business hours (8am-10pm EST).", true, infoDisplayText);
+            return;
+        }
 
         Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
 

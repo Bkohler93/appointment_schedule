@@ -1,6 +1,7 @@
 package com.example.appointment_schedule;
 
 
+import java.sql.Time;
 
 /**
  * @author Brett Kohler
@@ -33,4 +34,8 @@ public final class Constants {
     public static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver"; // Driver reference
     public static final String DB_USER_NAME = "sqlUser"; // Username
     public static final String DB_PASSWORD = "Passw0rd!"; // Password
+
+    public static final Time BUSINESS_HOURS_START_EST = Time.valueOf("07:59:59");
+    public static final Time BUSINESS_HOURS_END_EST = Time.valueOf("22:00:01");
+    public static final String BUSINESS_TIMEZONE = "America/New_York";
 }

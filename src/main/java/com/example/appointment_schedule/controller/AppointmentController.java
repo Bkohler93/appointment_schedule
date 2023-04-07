@@ -1,5 +1,6 @@
 package com.example.appointment_schedule.controller;
 
+import com.example.appointment_schedule.Constants;
 import com.example.appointment_schedule.dao.appointment.AppointmentDAO;
 import com.example.appointment_schedule.dao.appointment.AppointmentDAOImpl;
 import com.example.appointment_schedule.dao.contact.ContactDAO;
@@ -7,19 +8,23 @@ import com.example.appointment_schedule.dao.contact.ContactDAOImpl;
 import com.example.appointment_schedule.model.Appointment;
 import com.example.appointment_schedule.model.Contact;
 import com.example.appointment_schedule.model.Customer;
+import com.example.appointment_schedule.util.FxUtil;
 import com.example.appointment_schedule.util.TimeUtil;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
@@ -45,6 +50,8 @@ public class AppointmentController implements Initializable {
     public TextField createdByTextField;
     public TextField createTimeTextField;
     public TextField createDateTextField;
+    public Text infoDisplayText;
+    public VBox formContainerVBox;
     private Customer customer;
     private Appointment appointment;
     private final ContactDAO contactDAO = new ContactDAOImpl();
@@ -71,6 +78,25 @@ public class AppointmentController implements Initializable {
         this.appointment = appointment;
 //        fillForm();
     }
+
+    /**
+     * Recursive algorithm to clear any errors/notifications in the UI whenever the user types a key in a form field
+     * @param node node to check if currently a TextField, in which a setOnKeyTyped method is applied. Otherwise, the
+     *             method traverses through the nodes until a TextField is found. Any non-parent nodes that are not
+     *             TextFields will execute no code.
+     */
+    private void applyEventHandlersToTextFields(Node node) {
+        if (node instanceof TextField textField) {
+            textField.setOnKeyTyped(event -> {
+                FxUtil.clearInfoDisplayText(infoDisplayText);
+            });
+        } else if (node instanceof Parent parent) {
+            for (Node child : parent.getChildrenUnmodifiable()) {
+                applyEventHandlersToTextFields(child);
+            }
+        }
+    }
+
 
     /**
      * fills form based on what is being performed with the form (updating vs adding appointments)
@@ -196,6 +222,7 @@ public class AppointmentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            applyEventHandlersToTextFields(formContainerVBox);
             fillForm();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -231,6 +258,16 @@ public class AppointmentController implements Initializable {
         String updateDate = updateDateTextField.getText();
         String updateTime = updateTimeTextField.getText();
         Timestamp updateTimestamp = TimeUtil.formValueToUTCTimestamp(updateDate, updateTime);
+
+        Timestamp startEST = TimeUtil.formValueToESTTimestamp(startDate, startTime);
+        Timestamp endEST = TimeUtil.formValueToESTTimestamp(endDate, endTime);
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        String startTimeEST = timeFormat.format(startEST.getTime());
+        String endTimeEST = timeFormat.format(endEST.getTime());
+        if (!TimeUtil.areDatesBetween(Time.valueOf(startTimeEST),Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
+            FxUtil.displayInfoDisplayText("One or more proposed appointment times are outside of business hours (8am-10pm EST).", true, infoDisplayText);
+            return;
+        }
 
         String createdBy = createdByTextField.getText();
         String updatedBy = updatedByTextField.getText();
