@@ -6,11 +6,15 @@ import com.example.appointment_schedule.dao.appointment.AppointmentDAO;
 import com.example.appointment_schedule.dao.appointment.AppointmentDAOImpl;
 import com.example.appointment_schedule.dao.contact.ContactDAO;
 import com.example.appointment_schedule.dao.contact.ContactDAOImpl;
+import com.example.appointment_schedule.dao.country.CountryDAO;
+import com.example.appointment_schedule.dao.country.CountryDAOImpl;
 import com.example.appointment_schedule.model.Appointment;
+import com.example.appointment_schedule.model.Country;
 import com.example.appointment_schedule.model.User;
 import com.example.appointment_schedule.util.FxUtil;
 import com.example.appointment_schedule.util.TimeUtil;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,18 +36,26 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static com.example.appointment_schedule.util.FxUtil.clearInfoDisplayText;
 import static com.example.appointment_schedule.util.FxUtil.displayInfoDisplayText;
 
 public class AppointmentScheduleController implements Initializable {
-    private final int dateTextFieldLength = 10;
-    private final int timeTextFieldLength = 5;
     private final AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
     private final ContactDAO contactDAO = new ContactDAOImpl();
+    private final CountryDAO countryDAO = new CountryDAOImpl();
+
     public Button adjustAppointmentSaveButton;
     public AnchorPane anchorPane;
     public Text upcomingAptNotificationText;
+    public ComboBox<String> typeReportComboBox;
+    public Text typeReportText;
+    public Text byMonthReportText;
+    public ComboBox<String> byMonthReportMonthComboBox;
+    public Spinner<Integer> byMonthReportYearSpinner;
+    public ComboBox<String> byCountryReportComboBox;
+    public Text byCountryReportText;
     @FXML
     private Button cancelButton;
     @FXML
@@ -173,46 +185,11 @@ public class AppointmentScheduleController implements Initializable {
         }
 
         appointmentTableView.setOnMouseClicked(event -> {
-            adjustAppointmentSaveButton.setDisable(true);
-            Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
-            cancelButton.setDisable(false);
-            clearInfoDisplayText(infoDisplayText);
-            if (appointment != null) {
-                Timestamp timestampStart = appointment.getStart();
-                Timestamp timestampEnd = appointment.getEnd();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                String dateStart = dateFormat.format(timestampStart);
-                String dateEnd = dateFormat.format(timestampEnd);
-                String timeStart = timeFormat.format(timestampStart);
-                String timeEnd = timeFormat.format(timestampEnd);
-
-                dateStartInputTextField.setText(dateStart);
-                timeStartInputTextField.setText(timeStart);
-                dateEndInputTextField.setText(dateEnd);
-                timeEndInputTextField.setText(timeEnd);
-            }
+           selectAppointmentFromTableView();
         });
 
         appointmentTableView.setOnKeyPressed(event -> {
-            adjustAppointmentSaveButton.setDisable(true);
-            clearInfoDisplayText(infoDisplayText);
-            Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
-            if (appointment != null) {
-                Timestamp timestampStart = appointment.getStart();
-                Timestamp timestampEnd = appointment.getEnd();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                String dateStart = dateFormat.format(timestampStart);
-                String dateEnd = dateFormat.format(timestampEnd);
-                String timeStart = timeFormat.format(timestampStart);
-                String timeEnd = timeFormat.format(timestampEnd);
-
-                dateStartInputTextField.setText(dateStart);
-                timeStartInputTextField.setText(timeStart);
-                dateEndInputTextField.setText(dateEnd);
-                timeEndInputTextField.setText(timeEnd);
-            }
+            selectAppointmentFromTableView();
         });
 
 
@@ -221,6 +198,44 @@ public class AppointmentScheduleController implements Initializable {
         dateStartInputTextField.setOnKeyTyped(keyEvent -> { onKeyTypedDateTimeTextField(); });
         dateEndInputTextField.setOnKeyTyped(keyEvent -> { onKeyTypedDateTimeTextField(); });
 
+        typeReportComboBox.setItems(appointmentDAO.getUniqueTypeNames());
+        byMonthReportMonthComboBox.setItems(Constants.months);
+        try {
+            byCountryReportComboBox.setItems(countryDAO.getAllCountries().stream().map(Country::getName).collect(Collectors.toCollection(FXCollections::observableArrayList)));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        typeReportText.setText("");
+        byMonthReportText.setText("");
+
+        int year = TimeUtil.getYear();
+        byMonthReportYearSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(year, year + 50, year));
+        byMonthReportYearSpinner.increment(1);
+        byMonthReportYearSpinner.decrement(1);
+
+    }
+
+    private void selectAppointmentFromTableView() {
+        adjustAppointmentSaveButton.setDisable(true);
+        clearInfoDisplayText(infoDisplayText);
+        cancelButton.setDisable(false);
+        Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
+        if (appointment != null) {
+            Timestamp timestampStart = appointment.getStart();
+            Timestamp timestampEnd = appointment.getEnd();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            String dateStart = dateFormat.format(timestampStart);
+            String dateEnd = dateFormat.format(timestampEnd);
+            String timeStart = timeFormat.format(timestampStart);
+            String timeEnd = timeFormat.format(timestampEnd);
+
+            dateStartInputTextField.setText(dateStart);
+            timeStartInputTextField.setText(timeStart);
+            dateEndInputTextField.setText(dateEnd);
+            timeEndInputTextField.setText(timeEnd);
+        }
     }
 
     private void onKeyTypedDateTimeTextField() {
@@ -371,6 +386,7 @@ public class AppointmentScheduleController implements Initializable {
         try {
             appointmentDAO.getAllAppointments();
             appointmentTableView.setItems(appointmentDAO.getAppointmentsByMonthYear(selectedMonth, selectedYear));
+            typeReportComboBox.setItems(appointmentDAO.getUniqueTypeNames());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -436,6 +452,25 @@ public class AppointmentScheduleController implements Initializable {
             appointmentTableView.setItems(appointmentDAO.getAppointmentsByWeek(selectedWeekStartDate));
         }
         adjustAppointmentSaveButton.setDisable(true);
+        cancelButton.setDisable(true);
+    }
+
+    public void onActionTypeReportComboBox(ActionEvent actionEvent) {
+        String type = typeReportComboBox.getSelectionModel().getSelectedItem();
+        typeReportText.setText(Integer.toString(appointmentDAO.getAppointmentsByType(type).size()));
+    }
+
+    public void onActionByMonthReportComboBox(ActionEvent actionEvent) throws SQLException {
+        String selectedMonth = byMonthReportMonthComboBox.getSelectionModel().getSelectedItem();
+        int month = TimeUtil.monthStringToInt(selectedMonth);
+        int year = byMonthReportYearSpinner.getValue();
+
+        byMonthReportText.setText(Integer.toString(appointmentDAO.getAppointmentsByMonthYear(month, year).size()));
+    }
+
+    public void onActionByCountryComboBox(ActionEvent actionEvent) throws SQLException {
+        String country = byCountryReportComboBox.getSelectionModel().getSelectedItem();
+        byCountryReportText.setText(Integer.toString(countryDAO.getCountryAppointmentCount(country)));
     }
 }
 

@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
 
 public class AppointmentDAOImpl implements AppointmentDAO {
     private final ObservableList<Appointment> appointments = FXCollections.observableArrayList();
@@ -222,6 +223,16 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         } else {
             throw new SQLException("No ID available");
         }
+    }
+
+    @Override
+    public ObservableList<String> getUniqueTypeNames() {
+        return appointments.stream().map(Appointment::getType).distinct().collect(Collectors.toCollection(FXCollections::observableArrayList));
+    }
+
+    @Override
+    public ObservableList<Appointment> getAppointmentsByType(String type) {
+       return appointments.stream().filter(a -> a.getType().equals(type)).collect(Collectors.toCollection(FXCollections::observableArrayList));
     }
 
     /**

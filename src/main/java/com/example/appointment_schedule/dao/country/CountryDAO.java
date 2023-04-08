@@ -14,4 +14,6 @@ public interface CountryDAO {
     public Country getCountryByName(String selectedCountryName) throws SQLException;
 
     public Country getCountryById(int countryId) throws SQLException;
+
+    int getCountryAppointmentCount(String country) throws SQLException;
 }

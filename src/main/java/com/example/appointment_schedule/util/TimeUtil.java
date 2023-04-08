@@ -205,4 +205,26 @@ public class TimeUtil {
         LocalDateTime nowUTCLocal = nowUTC.toLocalDateTime();
         return Timestamp.valueOf(nowUTCLocal);
     }
+
+    public static int getYear() {
+        return LocalDate.now().getYear();
+    }
+
+    public static int monthStringToInt(String selectedMonth) {
+        switch (selectedMonth) {
+            case "January" -> { return 1; }
+            case "February" -> { return 2; }
+            case "March" -> { return 3; }
+            case "April" -> { return 4; }
+            case "May" -> { return 5; }
+            case "June" -> { return 6; }
+            case "July" -> { return 7; }
+            case "August" -> { return 8; }
+            case "September" -> { return 9; }
+            case "October" -> { return 10; }
+            case "November" -> { return 11; }
+            case "December" -> { return 12; }
+        }
+        return -1;
+    }
 }

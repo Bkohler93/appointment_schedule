@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collection;
 
 public interface AppointmentDAO {
     public ObservableList<Appointment> getAllAppointments() throws SQLException;
@@ -24,4 +25,8 @@ public interface AppointmentDAO {
     public ObservableList<Appointment> getAppointmentsByWeek(String selectedWeekStartDate) throws SQLException;
 
     int getNextId() throws SQLException;
+
+    ObservableList<String> getUniqueTypeNames();
+
+    ObservableList<Appointment> getAppointmentsByType(String type);
 }

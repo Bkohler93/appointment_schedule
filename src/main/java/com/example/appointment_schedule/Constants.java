@@ -1,6 +1,9 @@
 package com.example.appointment_schedule;
 
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.Time;
 
 /**
@@ -15,6 +18,9 @@ public final class Constants {
     private Constants() {
         // restrict instantiation
     }
+
+    public static final ObservableList<String> months = FXCollections.observableArrayList("January", "February", "March", "April",
+            "May", "June", "July", "August", "September", "October", "November", "December");
 
     /**
      * value of Part source label when part is inhouse

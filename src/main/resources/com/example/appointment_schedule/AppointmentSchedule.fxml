@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -159,8 +160,8 @@
                         </Label>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <ComboBox prefWidth="90.0" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="7">
+                              <ComboBox fx:id="typeReportComboBox" onAction="#onActionTypeReportComboBox" prefWidth="90.0" />
+                              <Text fx:id="typeReportText" strokeType="OUTSIDE" strokeWidth="0.0" text="7">
                                  <HBox.margin>
                                     <Insets left="8.0" />
                                  </HBox.margin>
@@ -179,15 +180,11 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </Label>
-                        <HBox alignment="CENTER_LEFT">
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
                            <children>
-                              <ComboBox prefWidth="90.0">
-                                 <HBox.margin>
-                                    <Insets right="2.0" />
-                                 </HBox.margin>
-                              </ComboBox>
-                              <ComboBox prefWidth="90.0" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="8">
+                              <Spinner fx:id="byMonthReportYearSpinner" prefWidth="100.0" />
+                              <ComboBox fx:id="byMonthReportMonthComboBox" onAction="#onActionByMonthReportComboBox" prefWidth="90.0" />
+                              <Text fx:id="byMonthReportText" strokeType="OUTSIDE" strokeWidth="0.0" text="8">
                                  <HBox.margin>
                                     <Insets left="8.0" />
                                  </HBox.margin>
@@ -208,8 +205,8 @@
                         </Label>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <ComboBox prefWidth="90.0" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="7">
+                              <ComboBox prefWidth="90.0" fx:id="byCountryReportComboBox" onAction="#onActionByCountryComboBox"/>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="" fx:id="byCountryReportText">
                                  <HBox.margin>
                                     <Insets left="8.0" />
                                  </HBox.margin>

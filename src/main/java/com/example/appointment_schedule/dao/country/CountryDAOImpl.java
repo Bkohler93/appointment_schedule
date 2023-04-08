@@ -88,4 +88,20 @@ public class CountryDAOImpl implements CountryDAO {
         }
         return null;
     }
+
+    @Override
+    public int getCountryAppointmentCount(String country) throws SQLException {
+        String sql = "select count(co.Country) as count from Countries as co" +
+                " inner join First_Level_Divisions as f on f.Country_ID = co.Country_ID" +
+                " inner join Customers as cu on cu.Division_ID = f.Division_ID" +
+                " inner join Appointments as a on a.Customer_ID = cu.Customer_ID" +
+                " where co.Country = '" + country + "'";
+        Query.makeQuery(sql);
+
+        ResultSet result = Query.getResult();
+        if (result.next()) {
+            return result.getInt("count");
+        }
+        return 0;
+    }
 }
