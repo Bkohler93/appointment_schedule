@@ -3,6 +3,7 @@ package com.example.appointment_schedule.dao.appointment;
 
 import com.example.appointment_schedule.dao.Query;
 import com.example.appointment_schedule.model.Appointment;
+import com.example.appointment_schedule.model.Contact;
 import com.example.appointment_schedule.model.Customer;
 import com.example.appointment_schedule.util.TimeUtil;
 import javafx.collections.FXCollections;
@@ -44,6 +45,9 @@ public class AppointmentDAOImpl implements AppointmentDAO {
      */
     @Override
     public ObservableList<Appointment> getAllCustomerAppointments(Customer customer) throws SQLException {
+        if (appointments.size() == 0) {
+            getAllAppointments();
+        }
         return appointments.filtered(a -> a.getCustomerId() == customer.getId());
     }
 
@@ -231,8 +235,19 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     }
 
     @Override
-    public ObservableList<Appointment> getAppointmentsByType(String type) {
+    public ObservableList<Appointment> getAppointmentsByType(String type) throws SQLException {
+        if (appointments.size() == 0) {
+            getAllAppointments();
+        }
        return appointments.stream().filter(a -> a.getType().equals(type)).collect(Collectors.toCollection(FXCollections::observableArrayList));
+    }
+
+    @Override
+    public ObservableList<Appointment> getAllContactAppointments(Contact selectedContact) throws SQLException {
+        if (appointments.size() == 0) {
+            getAllAppointments();
+        }
+       return appointments.stream().filter(a -> a.getContactId() == selectedContact.getId()).collect(Collectors.toCollection(FXCollections::observableArrayList));
     }
 
     /**

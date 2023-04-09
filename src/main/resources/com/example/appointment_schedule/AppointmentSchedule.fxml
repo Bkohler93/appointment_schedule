@@ -219,7 +219,7 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" text="Contacts" />
+                  <Button mnemonicParsing="false" text="Contacts" onAction="#onActionContactsButton"/>
                   <Button mnemonicParsing="false" onAction="#onActionCustomersButton" text="Customers" />
                </children>
             </HBox>

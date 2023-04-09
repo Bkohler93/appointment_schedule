@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.appointment_schedule.controller.ContactScheduleController">
    <children>
       <VBox alignment="CENTER" spacing="10.0">
@@ -24,23 +23,23 @@
             <HBox alignment="CENTER_LEFT" spacing="15.0">
                <children>
                   <Label text="Contact:" />
-                  <ComboBox prefWidth="150.0" />
+                  <ComboBox fx:id="contactComboBox" onAction="#onActionContactComboBox" prefWidth="150.0" />
                </children>
             </HBox>
-            <TableView prefHeight="200.0">
+            <TableView fx:id="appointmentTableView" prefHeight="200.0">
               <columns>
-                <TableColumn prefWidth="75.0" text="ID" />
-                <TableColumn prefWidth="75.0" text="Title" />
-                  <TableColumn prefWidth="75.0" text="Type" />
-                  <TableColumn prefWidth="150.0" text="Description" />
-                  <TableColumn prefWidth="75.0" text="Start" />
-                  <TableColumn prefWidth="75.0" text="End" />
-                  <TableColumn prefWidth="75.0" text="Customer ID" />
+                <TableColumn fx:id="idCol" prefWidth="75.0" text="ID" />
+                <TableColumn fx:id="titleCol" prefWidth="75.0" text="Title" />
+                  <TableColumn fx:id="typeCol" prefWidth="75.0" text="Type" />
+                  <TableColumn fx:id="descriptionCol" prefWidth="160.0" text="Description" />
+                  <TableColumn fx:id="startCol" prefWidth="150.0" text="Start" />
+                  <TableColumn fx:id="endCol" prefWidth="150.0" text="End" />
+                  <TableColumn fx:id="customerIdCol" prefWidth="75.0" text="Customer ID" />
               </columns>
             </TableView>
             <HBox alignment="CENTER_RIGHT">
                <children>
-                  <Button mnemonicParsing="false" text="Back" />
+                  <Button mnemonicParsing="false" onAction="#onActionBackButton" text="Back" />
                </children>
             </HBox>
          </children>

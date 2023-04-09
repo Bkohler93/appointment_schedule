@@ -455,7 +455,7 @@ public class AppointmentScheduleController implements Initializable {
         cancelButton.setDisable(true);
     }
 
-    public void onActionTypeReportComboBox(ActionEvent actionEvent) {
+    public void onActionTypeReportComboBox(ActionEvent actionEvent) throws SQLException {
         String type = typeReportComboBox.getSelectionModel().getSelectedItem();
         typeReportText.setText(Integer.toString(appointmentDAO.getAppointmentsByType(type).size()));
     }
@@ -471,6 +471,12 @@ public class AppointmentScheduleController implements Initializable {
     public void onActionByCountryComboBox(ActionEvent actionEvent) throws SQLException {
         String country = byCountryReportComboBox.getSelectionModel().getSelectedItem();
         byCountryReportText.setText(Integer.toString(countryDAO.getCountryAppointmentCount(country)));
+    }
+
+    public void onActionContactsButton(ActionEvent actionEvent) throws IOException {
+        clearInfoDisplayText(infoDisplayText);
+        Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+        FxUtil.navigateTo("ContactSchedule.fxml", stage, this::resetAppointmentScheduleByMonth);
     }
 }
 

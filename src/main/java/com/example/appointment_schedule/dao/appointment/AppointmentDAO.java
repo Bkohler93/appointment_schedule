@@ -2,6 +2,7 @@ package com.example.appointment_schedule.dao.appointment;
 
 
 import com.example.appointment_schedule.model.Appointment;
+import com.example.appointment_schedule.model.Contact;
 import com.example.appointment_schedule.model.Customer;
 import javafx.collections.ObservableList;
 
@@ -28,5 +29,7 @@ public interface AppointmentDAO {
 
     ObservableList<String> getUniqueTypeNames();
 
-    ObservableList<Appointment> getAppointmentsByType(String type);
+    ObservableList<Appointment> getAppointmentsByType(String type) throws SQLException;
+
+    ObservableList<Appointment> getAllContactAppointments(Contact selectedContact) throws SQLException;
 }
