@@ -11,7 +11,15 @@ import com.example.appointment_schedule.model.User;
 public class Auth {
     public static User user;
 
+    /**
+     * saves user information after retrieving from database
+     * @param validUser user to save
+     */
     public static void login(User validUser) { user = validUser; }
 
+    /**
+     * retrieve stored user
+     * @return logged in user
+     */
     public static User getUser() { return user; }
 }

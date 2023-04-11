@@ -8,6 +8,7 @@ import com.example.appointment_schedule.dao.user.UserDAOImpl;
 import com.example.appointment_schedule.localization.Localization;
 import com.example.appointment_schedule.model.User;
 import com.example.appointment_schedule.util.FxUtil;
+import com.example.appointment_schedule.util.Logger;
 import com.example.appointment_schedule.util.TimeUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,7 +25,6 @@ import java.sql.Timestamp;
 import java.time.ZoneId;
 
 public class LoginController {
-    private String password = "";
     @FXML
     public TextField usernameTextField;
     @FXML
@@ -65,44 +65,28 @@ public class LoginController {
 
         // hides password by turning all characters into "*" in text field, but saving password in `password` variable
         passwordTextField.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.length() < oldValue.length()) {
-                password = password.substring(0, password.length() - 1);
-            } else {
-                String newChar = oldValue.isEmpty() ? "" : String.valueOf(oldValue.charAt(oldValue.length() - 1));
-                password += newChar.equals("*") ? "" : newChar;
-            }
-            passwordTextField.setText(hidePassword(newValue));
+            errorTextField.setText("");
         });
     }
 
-    /**
-     * Takes in a string `s` and returns another string the same length as `s` but all characters replaced with
-     * `*`
-     * @param s string to hide
-     * @return hidden string consisting of all `*`
-     */
-    private String hidePassword(String s) {
-        StringBuilder hiddenPassword = new StringBuilder();
-        hiddenPassword.append("*".repeat(s.length()));
-        return hiddenPassword.toString();
-    }
 
     public void onActionLoginButton(ActionEvent actionEvent) {
         String username = usernameTextField.getText();
+        String password = passwordTextField.getText();
         try {
             User user = userDao.getUserByUsernamePw(username, password);
-
             if (user == null) {
                 errorTextField.setText(Localization.text("Check your username and password"));
+                Logger.login(username, password, false);
             } else {
                 Auth.login(user);
+                Logger.login(username, password, true);
                 System.out.println("logged in as " + user.getUserName());
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(Main.class.getResource("AppointmentSchedule.fxml"));
                 loader.load();
 
                 AppointmentScheduleController appointmentScheduleController = loader.getController();
-                appointmentScheduleController.sendUser(user);
 
                 Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
                 FxUtil.navigateToWithData(stage, loader, null);
@@ -120,6 +104,7 @@ public class LoginController {
     @FXML
     public void onActionRegisterButton(ActionEvent actionEvent) {
         String username = usernameTextField.getText();
+        String password = passwordTextField.getText();
 
         Timestamp utcTimestamp = TimeUtil.UTCTimestampNow();
 
