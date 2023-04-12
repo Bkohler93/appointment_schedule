@@ -11,234 +11,198 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.appointment_schedule.controller.AppointmentController">
-   <children>
-      <VBox alignment="CENTER" layoutX="143.0" layoutY="14.0">
-         <children>
-            <Text fx:id="appointmentFormTitleText" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Appointment">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin>
-            </Text>
-            <VBox fx:id="formContainerVBox">
-               <children>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="ID" />
-                        <TextField fx:id="idTextField" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Title" />
-                        <TextField fx:id="titleTextField" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Description" />
-                        <TextField fx:id="descriptionTextField" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Location" />
-                        <TextField fx:id="locationTextField" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Contact" />
-                        <ComboBox fx:id="contactComboBox" prefWidth="150.0" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Type" />
-                        <TextField fx:id="typeTextField" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Start" />
-                        <TextField fx:id="startDateTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
-                           <HBox.margin>
-                              <Insets right="5.0" />
-                           </HBox.margin>
-                        </TextField>
-                        <TextField fx:id="startTimeTextField" prefWidth="80.0" promptText="23:59" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="End" />
-                        <TextField fx:id="endDateTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
-                           <HBox.margin>
-                              <Insets right="5.0" />
-                           </HBox.margin>
-                        </TextField>
-                        <TextField fx:id="endTimeTextField" prefWidth="80.0" promptText="23:59" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Created" />
-                        <TextField fx:id="createDateTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
-                           <HBox.margin>
-                              <Insets right="5.0" />
-                           </HBox.margin>
-                        </TextField>
-                        <TextField fx:id="createTimeTextField" prefWidth="80.0" promptText="23:59" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Created By" />
-                        <TextField fx:id="createdByTextField" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Last Updated" />
-                        <TextField fx:id="updateDateTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
-                           <HBox.margin>
-                              <Insets right="5.0" />
-                           </HBox.margin>
-                        </TextField>
-                        <TextField fx:id="updateTimeTextField" prefWidth="80.0" promptText="23:59" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Last Updated By" />
-                        <TextField fx:id="updatedByTextField" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="Customer_ID" />
-                        <TextField fx:id="customerIdTextField" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT">
-                     <children>
-                        <Label prefWidth="100.0" text="User_ID" />
-                        <TextField fx:id="userIdTextField" />
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER" minHeight="100.0" prefWidth="0.0">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                     <children>
-                        <Text fx:id="infoDisplayText" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="250.0" />
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" top="10.0" />
-                     </padding>
-                  </HBox>
-                  <HBox alignment="CENTER_RIGHT" spacing="20.0">
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#onActionCancelButton" text="Cancel" />
-                        <Button mnemonicParsing="false" onAction="#onActionSaveButton" text="Save" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-         </children>
-         <padding>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </padding>
+<AnchorPane prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.appointment_schedule.controller.AppointmentController">
+   <VBox alignment="CENTER" layoutX="143.0" layoutY="14.0">
+      <padding>
+         <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+      </padding>
+      <Text fx:id="appointmentFormTitleText" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Appointment">
+         <font>
+            <Font size="18.0"/>
+         </font>
+         <VBox.margin>
+            <Insets bottom="20.0"/>
+         </VBox.margin>
+      </Text>
+      <VBox fx:id="formContainerVBox">
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="ID"/>
+            <TextField fx:id="idTextField"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Title"/>
+            <TextField fx:id="titleTextField"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Description"/>
+            <TextField fx:id="descriptionTextField"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Location"/>
+            <TextField fx:id="locationTextField"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Contact"/>
+            <ComboBox fx:id="contactComboBox" prefWidth="150.0"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Type"/>
+            <TextField fx:id="typeTextField"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Start"/>
+            <TextField fx:id="startDateTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
+               <HBox.margin>
+                  <Insets right="5.0"/>
+               </HBox.margin>
+            </TextField>
+            <TextField fx:id="startTimeTextField" prefWidth="80.0" promptText="23:59"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="End"/>
+            <TextField fx:id="endDateTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
+               <HBox.margin>
+                  <Insets right="5.0"/>
+               </HBox.margin>
+            </TextField>
+            <TextField fx:id="endTimeTextField" prefWidth="80.0" promptText="23:59"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Created"/>
+            <TextField fx:id="createDateTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
+               <HBox.margin>
+                  <Insets right="5.0"/>
+               </HBox.margin>
+            </TextField>
+            <TextField fx:id="createTimeTextField" prefWidth="80.0" promptText="23:59"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Created By"/>
+            <TextField fx:id="createdByTextField"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Last Updated"/>
+            <TextField fx:id="updateDateTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
+               <HBox.margin>
+                  <Insets right="5.0"/>
+               </HBox.margin>
+            </TextField>
+            <TextField fx:id="updateTimeTextField" prefWidth="80.0" promptText="23:59"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Last Updated By"/>
+            <TextField fx:id="updatedByTextField"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="Customer_ID"/>
+            <TextField fx:id="customerIdTextField"/>
+         </HBox>
+         <HBox alignment="CENTER_LEFT">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <Label prefWidth="100.0" text="User_ID"/>
+            <TextField fx:id="userIdTextField"/>
+         </HBox>
+         <HBox alignment="CENTER" minHeight="100.0" prefWidth="0.0">
+            <VBox.margin>
+               <Insets/>
+            </VBox.margin>
+            <padding>
+               <Insets bottom="10.0" top="10.0"/>
+            </padding>
+            <Text fx:id="infoDisplayText" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER"
+                  wrappingWidth="250.0"/>
+         </HBox>
+         <HBox alignment="CENTER_RIGHT" spacing="20.0">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <Button mnemonicParsing="false" onAction="#closeWindow" text="Cancel"/>
+            <Button mnemonicParsing="false" onAction="#saveAppointment" text="Save"/>
+         </HBox>
       </VBox>
-   </children>
+   </VBox>
 </AnchorPane>

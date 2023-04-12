@@ -13,87 +13,75 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.appointment_schedule.controller.CustomerListController">
-   <children>
-      <HBox>
-         <children>
-            <VBox alignment="CENTER_LEFT" spacing="10.0">
-               <children>
-                  <Label text="Customers">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <TableView fx:id="customerTableView">
-                    <columns>
-                        <TableColumn fx:id="customerIdCol" prefWidth="75.0" text="ID" />
-                      <TableColumn fx:id="customerNameCol" prefWidth="75.0" text="Name" />
-                      <TableColumn fx:id="customerAddressCol" prefWidth="75.0" text="Address" />
-                        <TableColumn fx:id="customerPostalCol" prefWidth="75.0" text="Postal Code" />
-                        <TableColumn fx:id="customerPhoneCol" prefWidth="75.0" text="Phone" />
-                        <TableColumn fx:id="customerCreateDateCol" prefWidth="75.0" text="Create Date" />
-                        <TableColumn fx:id="customerCreatedByCol" prefWidth="75.0" text="Created By" />
-                        <TableColumn fx:id="customerLastUpdateCol" prefWidth="75.0" text="Last Update" />
-                        <TableColumn fx:id="customerLastUpdatedByCol" prefWidth="100.0" text="Last Updated By" />
-                        <TableColumn fx:id="customerDivisionIdCol" prefWidth="75.0" text="Division ID" />
-                    </columns>
-                  </TableView>
-                  <HBox alignment="CENTER">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" fx:id="infoDisplayText"  />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="10.0">
-                     <children>
-                        <HBox alignment="CENTER_LEFT">
-                           <children>
-                              <Button mnemonicParsing="false" onAction="#onActionBackButton" text="Back" />
-                           </children>
-                        </HBox>
-                        <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                           <children>
-                              <Button mnemonicParsing="false" onAction="#onActionAddCustomerButton" text="Add" />
-                              <Button mnemonicParsing="false" onAction="#onActionModifyCustomerButton" text="Modify" />
-                              <Button mnemonicParsing="false" onAction="#onActionDeleteCustomerButton" text="Delete" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </HBox>
-               </children>
-               <padding>
-                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-               </padding>
-            </VBox>
-            <Line endX="-100.0" endY="536.0" layoutY="100.0" startX="-100.0" startY="1045.0">
-               <HBox.margin>
-                  <Insets bottom="40.0" left="15.0" right="45.0" top="40.0" />
-               </HBox.margin>
-            </Line>
-            <VBox alignment="CENTER" spacing="10.0">
-               <children>
-                  <Text fx:id="customerAppointmentsTitleText" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer's Appointments Quick View" />
-                  <TableView fx:id="appointmentTableView" prefHeight="300.0">
-                    <columns>
-                      <TableColumn fx:id="appointmentIdCol" prefWidth="75.0" text="ID" />
-                      <TableColumn fx:id="appointmentTitleCol" prefWidth="75.0" text="Title" />
-                        <TableColumn fx:id="appointmentStartCol" prefWidth="75.0" text="Start" />
-                        <TableColumn fx:id="appointmentEndCol" prefWidth="75.0" text="End" />
-                    </columns>
-                  </TableView>
-                  <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#onActionAddAppointmentButton" text="Add" />
-                        <Button mnemonicParsing="false" onAction="#onActionModifyAppointmentButton" text="Modify" />
-                        <Button mnemonicParsing="false" onAction="#onActionDeleteAppointmentButton" text="Delete" />
-                     </children>
-                  </HBox>
-               </children>
-               <padding>
-                  <Insets right="25.0" />
-               </padding>
-            </VBox>
-         </children>
-      </HBox>
-   </children>
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.appointment_schedule.controller.CustomerListController">
+    <HBox>
+        <VBox alignment="CENTER_LEFT" spacing="10.0">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+            </padding>
+            <Label text="Customers">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+            </Label>
+            <TableView fx:id="customerTableView">
+                <columns>
+                    <TableColumn fx:id="customerIdCol" prefWidth="75.0" text="ID"/>
+                    <TableColumn fx:id="customerNameCol" prefWidth="75.0" text="Name"/>
+                    <TableColumn fx:id="customerAddressCol" prefWidth="75.0" text="Address"/>
+                    <TableColumn fx:id="customerPostalCol" prefWidth="75.0" text="Postal Code"/>
+                    <TableColumn fx:id="customerPhoneCol" prefWidth="75.0" text="Phone"/>
+                    <TableColumn fx:id="customerCreateDateCol" prefWidth="75.0" text="Create Date"/>
+                    <TableColumn fx:id="customerCreatedByCol" prefWidth="75.0" text="Created By"/>
+                    <TableColumn fx:id="customerLastUpdateCol" prefWidth="75.0" text="Last Update"/>
+                    <TableColumn fx:id="customerLastUpdatedByCol" prefWidth="100.0" text="Last Updated By"/>
+                    <TableColumn fx:id="customerDivisionIdCol" prefWidth="75.0" text="Division ID"/>
+                </columns>
+            </TableView>
+            <HBox alignment="CENTER">
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" fx:id="infoDisplayText"/>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="10.0">
+                <HBox alignment="CENTER_LEFT">
+                    <Button mnemonicParsing="false" onAction="#closeWindow" text="Back"/>
+                </HBox>
+                <Region prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                    <Button mnemonicParsing="false" onAction="#navigateToCustomerFormToAddCustomer"
+                            text="Add"/>
+                    <Button mnemonicParsing="false" onAction="#navigateToCustomerFormToModifyCustomer"
+                            text="Modify"/>
+                    <Button mnemonicParsing="false" onAction="#deleteCustomer" text="Delete"/>
+                </HBox>
+            </HBox>
+        </VBox>
+        <Line endX="-100.0" endY="536.0" layoutY="100.0" startX="-100.0" startY="1045.0">
+            <HBox.margin>
+                <Insets bottom="40.0" left="15.0" right="45.0" top="40.0"/>
+            </HBox.margin>
+        </Line>
+        <VBox alignment="CENTER" spacing="10.0">
+            <padding>
+                <Insets right="25.0"/>
+            </padding>
+            <Text fx:id="customerAppointmentsTitleText" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Customer's Appointments Quick View"/>
+            <TableView fx:id="appointmentTableView" prefHeight="300.0">
+                <columns>
+                    <TableColumn fx:id="appointmentIdCol" prefWidth="75.0" text="ID"/>
+                    <TableColumn fx:id="appointmentTitleCol" prefWidth="75.0" text="Title"/>
+                    <TableColumn fx:id="appointmentStartCol" prefWidth="75.0" text="Start"/>
+                    <TableColumn fx:id="appointmentEndCol" prefWidth="75.0" text="End"/>
+                </columns>
+            </TableView>
+            <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToAddAppointment"
+                        text="Add"/>
+                <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToModifyAppointment"
+                        text="Modify"/>
+                <Button mnemonicParsing="false" onAction="#deleteAppointment" text="Delete"/>
+            </HBox>
+        </VBox>
+    </HBox>
 </AnchorPane>

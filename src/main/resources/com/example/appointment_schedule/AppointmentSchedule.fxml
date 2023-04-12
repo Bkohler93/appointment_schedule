@@ -16,217 +16,200 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.appointment_schedule.controller.AppointmentScheduleController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.appointment_schedule.controller.AppointmentScheduleController">
    <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
    </padding>
-   <children>
-      <VBox alignment="CENTER" spacing="5.0">
-         <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Appointment Schedule">
-               <font>
-                  <Font size="18.0" />
-               </font>
+   <VBox alignment="CENTER" spacing="5.0">
+      <padding>
+         <Insets left="20.0" right="20.0" top="20.0"/>
+      </padding>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Appointment Schedule">
+         <font>
+            <Font size="18.0"/>
+         </font>
+         <VBox.margin>
+            <Insets bottom="10.0" top="15.0"/>
+         </VBox.margin>
+      </Text>
+      <Text fx:id="upcomingAptNotificationText" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointment Schedule">
+         <font>
+            <Font size="12.0"/>
+         </font>
+      </Text>
+      <HBox alignment="CENTER_LEFT">
+         <RadioButton fx:id="byMonthRadioButton" mnemonicParsing="false" onAction="#fillAppointmentsByMonthYear"
+                      prefWidth="120.0" text="By month">
+            <HBox.margin>
+               <Insets right="10.0"/>
+            </HBox.margin>
+         </RadioButton>
+         <RadioButton fx:id="byWeekRadioButton" mnemonicParsing="false" onAction="#fillAppointmentsByWeek"
+                      prefWidth="150.0" text="By week"/>
+         <Button mnemonicParsing="false" onAction="#fillAppointmentsBasedOnPreviousTimeInterval" text="&lt;">
+            <HBox.margin>
+               <Insets right="8.0"/>
+            </HBox.margin>
+         </Button>
+         <Label fx:id="selectedTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefWidth="150.0"
+                text="Dec 2023" textAlignment="CENTER"/>
+         <Button mnemonicParsing="false" onAction="#fillAppointmentsBasedOnNextTimeInterval" text="&gt;">
+            <HBox.margin>
+               <Insets left="8.0"/>
+            </HBox.margin>
+         </Button>
+      </HBox>
+      <TableView fx:id="appointmentTableView" prefHeight="200.0">
+         <columns>
+            <TableColumn fx:id="idCol" prefWidth="75.0" text="ID"/>
+            <TableColumn fx:id="titleCol" prefWidth="75.0" text="Title"/>
+            <TableColumn fx:id="descriptionCol" prefWidth="200.0" text="Description"/>
+            <TableColumn fx:id="locationCol" prefWidth="75.0" text="Location"/>
+            <TableColumn fx:id="contactCol" prefWidth="75.0" text="Contact"/>
+            <TableColumn fx:id="typeCol" prefWidth="75.0" text="Type"/>
+            <TableColumn fx:id="startCol" prefWidth="120.0" text="Start"/>
+            <TableColumn fx:id="endCol" prefWidth="120.0" text="End"/>
+            <TableColumn fx:id="customerIdCol" prefWidth="75.0" text="Customer ID"/>
+            <TableColumn fx:id="userIdCol" prefWidth="75.0" text="User ID"/>
+         </columns>
+         <VBox.margin>
+            <Insets top="5.0"/>
+         </VBox.margin>
+      </TableView>
+      <HBox alignment="CENTER_LEFT" prefWidth="200.0">
+         <VBox.margin>
+            <Insets top="10.0"/>
+         </VBox.margin>
+         <Label text="Adjust Appointment Time:">
+            <padding>
+               <Insets right="20.0"/>
+            </padding>
+            <font>
+               <Font name="System Bold" size="13.0"/>
+            </font>
+         </Label>
+         <Label text="Start">
+            <HBox.margin>
+               <Insets right="5.0"/>
+            </HBox.margin>
+         </Label>
+         <TextField fx:id="dateStartInputTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
+            <HBox.margin>
+               <Insets right="5.0"/>
+            </HBox.margin>
+         </TextField>
+         <TextField fx:id="timeStartInputTextField" prefWidth="50.0" promptText="23:59">
+            <HBox.margin>
+               <Insets right="15.0"/>
+            </HBox.margin>
+         </TextField>
+         <Label text="End">
+            <HBox.margin>
+               <Insets right="5.0"/>
+            </HBox.margin>
+         </Label>
+         <TextField fx:id="dateEndInputTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
+            <HBox.margin>
+               <Insets right="5.0"/>
+            </HBox.margin>
+         </TextField>
+         <TextField fx:id="timeEndInputTextField" prefWidth="50.0" promptText="23:59"/>
+         <Button fx:id="adjustAppointmentSaveButton" mnemonicParsing="false"
+                 onAction="#saveAdjustedAppointmentDateTime" text="Save">
+            <HBox.margin>
+               <Insets left="30.0"/>
+            </HBox.margin>
+         </Button>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT" spacing="20.0">
+         <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToAddAppointment" text="Add">
+            <HBox.margin>
+               <Insets/>
+            </HBox.margin>
+         </Button>
+         <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToModifyAppointment" text="Modify">
+            <HBox.margin>
+               <Insets/>
+            </HBox.margin>
+         </Button>
+         <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelSelectedAppointment"
+                 text="Cancel"/>
+      </HBox>
+      <Text fx:id="infoDisplayText" strokeType="OUTSIDE" strokeWidth="0.0"/>
+      <Line endX="100.0" startX="-700.0">
+         <VBox.margin>
+            <Insets top="10.0"/>
+         </VBox.margin>
+      </Line>
+      <HBox alignment="CENTER_LEFT" spacing="30.0">
+         <VBox.margin>
+            <Insets top="10.0"/>
+         </VBox.margin>
+         <Label text="Total Appointments:">
+            <font>
+               <Font size="14.0"/>
+            </font>
+         </Label>
+         <VBox alignment="CENTER">
+            <HBox.margin>
+               <Insets/>
+            </HBox.margin>
+            <Label text="By Type">
                <VBox.margin>
-                  <Insets bottom="10.0" top="15.0" />
+                  <Insets bottom="5.0"/>
                </VBox.margin>
-            </Text>
-            <Text fx:id="upcomingAptNotificationText" strokeType="OUTSIDE" strokeWidth="0.0" text="Appointment Schedule">
-               <font>
-                  <Font size="12.0" />
-               </font>
-            </Text>
+            </Label>
             <HBox alignment="CENTER_LEFT">
-               <children>
-                  <RadioButton fx:id="byMonthRadioButton" mnemonicParsing="false" onAction="#onActionByMonthRadioButton" prefWidth="120.0" text="By month">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin>
-                  </RadioButton>
-                  <RadioButton fx:id="byWeekRadioButton" mnemonicParsing="false" onAction="#onActionByWeekRadioButton" prefWidth="150.0" text="By week" />
-                  <Button mnemonicParsing="false" onAction="#onActionPreviousViewButton" text="&lt;">
-                     <HBox.margin>
-                        <Insets right="8.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Label fx:id="selectedTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefWidth="150.0" text="Dec 2023" textAlignment="CENTER" />
-                  <Button mnemonicParsing="false" onAction="#onActionNextViewButton" text="&gt;">
-                     <HBox.margin>
-                        <Insets left="8.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
+               <ComboBox fx:id="typeReportComboBox" onAction="#displayNumberOfAppointmentsByType"
+                         prefWidth="90.0"/>
+               <Text fx:id="typeReportText" strokeType="OUTSIDE" strokeWidth="0.0" text="7">
+                  <HBox.margin>
+                     <Insets left="8.0"/>
+                  </HBox.margin>
+               </Text>
             </HBox>
-            <TableView fx:id="appointmentTableView" prefHeight="200.0">
-              <columns>
-                <TableColumn fx:id="idCol" prefWidth="75.0" text="ID" />
-                <TableColumn fx:id="titleCol" prefWidth="75.0" text="Title" />
-                  <TableColumn fx:id="descriptionCol" prefWidth="200.0" text="Description" />
-                  <TableColumn fx:id="locationCol" prefWidth="75.0" text="Location" />
-                  <TableColumn fx:id="contactCol" prefWidth="75.0" text="Contact" />
-                  <TableColumn fx:id="typeCol" prefWidth="75.0" text="Type" />
-                  <TableColumn fx:id="startCol" prefWidth="120.0" text="Start" />
-                  <TableColumn fx:id="endCol" prefWidth="120.0" text="End" />
-                  <TableColumn fx:id="customerIdCol" prefWidth="75.0" text="Customer ID" />
-                  <TableColumn fx:id="userIdCol" prefWidth="75.0" text="User ID" />
-              </columns>
+         </VBox>
+         <VBox alignment="CENTER">
+            <HBox.margin>
+               <Insets/>
+            </HBox.margin>
+            <Label text="By Month">
                <VBox.margin>
-                  <Insets top="5.0" />
+                  <Insets bottom="5.0"/>
                </VBox.margin>
-            </TableView>
-            <HBox alignment="CENTER_LEFT" prefWidth="200.0">
-               <children>
-                  <Label text="Adjust Appointment Time:">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font>
-                  </Label>
-                  <Label text="Start">
-                     <HBox.margin>
-                        <Insets right="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <TextField fx:id="dateStartInputTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
-                     <HBox.margin>
-                        <Insets right="5.0" />
-                     </HBox.margin>
-                  </TextField>
-                  <TextField fx:id="timeStartInputTextField" prefWidth="50.0" promptText="23:59">
-                     <HBox.margin>
-                        <Insets right="15.0" />
-                     </HBox.margin>
-                  </TextField>
-                  <Label text="End">
-                     <HBox.margin>
-                        <Insets right="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <TextField fx:id="dateEndInputTextField" prefWidth="95.0" promptText="YYYY/MM/DD">
-                     <HBox.margin>
-                        <Insets right="5.0" />
-                     </HBox.margin>
-                  </TextField>
-                  <TextField fx:id="timeEndInputTextField" prefWidth="50.0" promptText="23:59" />
-                  <Button fx:id="adjustAppointmentSaveButton" mnemonicParsing="false" onAction="#onActionAdjustAppointmentSaveButton" text="Save">
-                     <HBox.margin>
-                        <Insets left="30.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
+            </Label>
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
+               <Spinner fx:id="byMonthReportYearSpinner" prefWidth="100.0"/>
+               <ComboBox fx:id="byMonthReportMonthComboBox"
+                         onAction="#displayNumberOfAppointmentsByMonthYear" prefWidth="90.0"/>
+               <Text fx:id="byMonthReportText" strokeType="OUTSIDE" strokeWidth="0.0" text="8">
+                  <HBox.margin>
+                     <Insets left="8.0"/>
+                  </HBox.margin>
+               </Text>
+            </HBox>
+         </VBox>
+         <VBox alignment="CENTER">
+            <Label text="By Country">
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets bottom="5.0"/>
                </VBox.margin>
+            </Label>
+            <HBox alignment="CENTER_LEFT">
+               <ComboBox prefWidth="90.0" fx:id="byCountryReportComboBox"
+                         onAction="#displayNumberOfAppointmentsByCountry"/>
+               <Text strokeType="OUTSIDE" fx:id="byCountryReportText">
+                  <HBox.margin>
+                     <Insets left="8.0"/>
+                  </HBox.margin>
+               </Text>
             </HBox>
-            <HBox alignment="CENTER_RIGHT" spacing="20.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#onActionAddButton" text="Add">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onActionModifyButton" text="Modify">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onActionCancelButton" text="Cancel" />
-               </children>
-            </HBox>
-            <Text fx:id="infoDisplayText" strokeType="OUTSIDE" strokeWidth="0.0" />
-            <Line endX="100.0" startX="-700.0">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </Line>
-            <HBox alignment="CENTER_LEFT" spacing="30.0">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-               <children>
-                  <Label text="Total Appointments:">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <VBox alignment="CENTER">
-                     <children>
-                        <Label text="By Type">
-                           <VBox.margin>
-                              <Insets bottom="5.0" />
-                           </VBox.margin>
-                        </Label>
-                        <HBox alignment="CENTER_LEFT">
-                           <children>
-                              <ComboBox fx:id="typeReportComboBox" onAction="#onActionTypeReportComboBox" prefWidth="90.0" />
-                              <Text fx:id="typeReportText" strokeType="OUTSIDE" strokeWidth="0.0" text="7">
-                                 <HBox.margin>
-                                    <Insets left="8.0" />
-                                 </HBox.margin>
-                              </Text>
-                           </children>
-                        </HBox>
-                     </children>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </VBox>
-                  <VBox alignment="CENTER">
-                     <children>
-                        <Label text="By Month">
-                           <VBox.margin>
-                              <Insets bottom="5.0" />
-                           </VBox.margin>
-                        </Label>
-                        <HBox alignment="CENTER_LEFT" spacing="5.0">
-                           <children>
-                              <Spinner fx:id="byMonthReportYearSpinner" prefWidth="100.0" />
-                              <ComboBox fx:id="byMonthReportMonthComboBox" onAction="#onActionByMonthReportComboBox" prefWidth="90.0" />
-                              <Text fx:id="byMonthReportText" strokeType="OUTSIDE" strokeWidth="0.0" text="8">
-                                 <HBox.margin>
-                                    <Insets left="8.0" />
-                                 </HBox.margin>
-                              </Text>
-                           </children>
-                        </HBox>
-                     </children>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </VBox>
-                  <VBox alignment="CENTER">
-                     <children>
-                        <Label text="By Country">
-                           <VBox.margin>
-                              <Insets bottom="5.0" />
-                           </VBox.margin>
-                        </Label>
-                        <HBox alignment="CENTER_LEFT">
-                           <children>
-                              <ComboBox prefWidth="90.0" fx:id="byCountryReportComboBox" onAction="#onActionByCountryComboBox"/>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="" fx:id="byCountryReportText">
-                                 <HBox.margin>
-                                    <Insets left="8.0" />
-                                 </HBox.margin>
-                              </Text>
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" spacing="20.0">
-               <children>
-                  <Button mnemonicParsing="false" text="Contacts" onAction="#onActionContactsButton"/>
-                  <Button mnemonicParsing="false" onAction="#onActionCustomersButton" text="Customers" />
-               </children>
-            </HBox>
-         </children>
-         <padding>
-            <Insets left="20.0" right="20.0" top="20.0" />
-         </padding>
-      </VBox>
-   </children>
+         </VBox>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT" spacing="20.0">
+         <Button mnemonicParsing="false" text="Contacts" onAction="#navigateToContactSchedule"/>
+         <Button mnemonicParsing="false" onAction="#navigateToCustomerList" text="Customers"/>
+      </HBox>
+   </VBox>
 </AnchorPane>

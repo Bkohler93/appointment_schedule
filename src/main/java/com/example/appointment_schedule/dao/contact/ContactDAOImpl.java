@@ -78,6 +78,16 @@ public class ContactDAOImpl implements ContactDAO{
         return contactResult.orElse(null);
     }
 
+    @Override
+    public Contact getContactByName(String name) throws SQLException {
+       if (contacts.isEmpty()) {
+           getAllContacts();
+       }
+       Optional<Contact> contactResult = contacts.stream().filter(c -> c.getName() == name).findFirst();
+
+       return contactResult.orElse(null);
+    }
+
     /**
      * USING LAMBDA EXPRESSION TO QUICKLY FILTER
      * @param value

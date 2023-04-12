@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,7 +33,11 @@ public class FxUtil {
         newStage.setScene(new Scene(scene));
         stage.setOnShowing(e -> {
             if (callback != null) {
-                callback.call();
+                try {
+                    callback.call();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         newStage.setOnCloseRequest(windowEvent -> stage.show());
@@ -78,7 +83,11 @@ public class FxUtil {
         //      the updated customer list.
         stage.setOnShowing(e -> {
             if (callback != null) {
-                callback.call();
+                try {
+                    callback.call();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -93,7 +102,7 @@ public class FxUtil {
      */
     @FunctionalInterface
     public interface Callback {
-        void call();
+        void call() throws SQLException;
     }
 
     /**

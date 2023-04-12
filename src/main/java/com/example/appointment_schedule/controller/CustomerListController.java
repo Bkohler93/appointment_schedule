@@ -19,7 +19,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -37,73 +36,61 @@ public class CustomerListController implements Initializable {
     private final CustomerDAO customerDAO = new CustomerDAOImpl();
     private final AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
     @FXML
-    public TableView<Customer> customerTableView;
+    private TableView<Customer> customerTableView;
     @FXML
-    public TableColumn<Customer, String> customerNameCol;
+    private TableColumn<Customer, String> customerNameCol;
     @FXML
-    public TableColumn<Customer, String> customerAddressCol;
+    private TableColumn<Customer, String> customerAddressCol;
     @FXML
-    public TableColumn<Customer, String> customerPostalCol;
+    private TableColumn<Customer, String> customerPostalCol;
     @FXML
-    public TableColumn<Customer, String> customerPhoneCol;
+    private TableColumn<Customer, String> customerPhoneCol;
     @FXML
-    public TableColumn<Customer, Integer> customerIdCol;
+    private TableColumn<Customer, Integer> customerIdCol;
     @FXML
-    public TableColumn<Customer, LocalDateTime> customerCreateDateCol;
+    private TableColumn<Customer, LocalDateTime> customerCreateDateCol;
     @FXML
-    public TableColumn<Customer, String> customerCreatedByCol;
+    private TableColumn<Customer, String> customerCreatedByCol;
     @FXML
-    public TableColumn<Customer, LocalDateTime> customerLastUpdateCol;
+    private TableColumn<Customer, LocalDateTime> customerLastUpdateCol;
     @FXML
-    public TableColumn<Customer, String> customerLastUpdatedByCol;
+    private TableColumn<Customer, String> customerLastUpdatedByCol;
     @FXML
-    public TableColumn<Customer, Integer> customerDivisionIdCol;
+    private TableColumn<Customer, Integer> customerDivisionIdCol;
 
     @FXML
-    public TableView<Appointment> appointmentTableView;
+    private TableView<Appointment> appointmentTableView;
     @FXML
-    public TableColumn<Appointment, Integer> appointmentIdCol;
+    private TableColumn<Appointment, Integer> appointmentIdCol;
     @FXML
-    public TableColumn<Appointment, String> appointmentTitleCol;
+    private TableColumn<Appointment, String> appointmentTitleCol;
     @FXML
-    public TableColumn<Appointment, LocalDateTime> appointmentStartCol;
+    private TableColumn<Appointment, LocalDateTime> appointmentStartCol;
     @FXML
-    public TableColumn<Appointment, LocalDateTime> appointmentEndCol;
+    private TableColumn<Appointment, LocalDateTime> appointmentEndCol;
     @FXML
     private Text customerAppointmentsTitleText;
     @FXML
     private Text infoDisplayText;
 
-    /**
-     * @param url TODO
-     * @param resourceBundle TODO
+    /** LAMBDA EXPRESSIONS HERE!
+     * initializes table values to be filled with customers and appointments.
+     * @param url not used
+     * @param resourceBundle not used
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // fill customerTableView with all customers from customerDAO
         try {
             customerTableView.setItems(customerDAO.getAllCustomers());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        infoDisplayText.setFill(Color.RED);
-        clearInfoDisplayText(infoDisplayText);
-        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
-        customerPostalCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-        customerCreateDateCol.setCellValueFactory(new PropertyValueFactory<>("createDate"));
-        customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        customerIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-        customerCreatedByCol.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
-        customerLastUpdateCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdate"));
-        customerDivisionIdCol.setCellValueFactory(new PropertyValueFactory<>("divisionId"));
-        customerLastUpdatedByCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdatedBy"));
 
-        appointmentEndCol.setCellValueFactory(new PropertyValueFactory<>("end"));
-        appointmentStartCol.setCellValueFactory(new PropertyValueFactory<>("start"));
-        appointmentIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-        appointmentTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
-        Label placeholderLabel = new Label("Select a customer to main.com.appointment_tracker.view appointments.");
-        appointmentTableView.setPlaceholder(placeholderLabel);
+        clearInfoDisplayText(infoDisplayText);
+
+        setUpTableColumnValues();
 
         // Selecting a row (customer) in the customerTableView focuses the row, this lambda is triggered when that happens
         // and causes the appointmentTableView to be populated with the currently selected customer.
@@ -145,26 +132,62 @@ public class CustomerListController implements Initializable {
 
     }
 
-    // returns to previous form
+    /**
+     * Helper method to set up customerTableView and appointmentTableView columns with their respective data
+     * from their Model classes
+     */
+    private void setUpTableColumnValues() {
+        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
+        customerPostalCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+        customerCreateDateCol.setCellValueFactory(new PropertyValueFactory<>("createDate"));
+        customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        customerIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        customerCreatedByCol.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
+        customerLastUpdateCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdate"));
+        customerDivisionIdCol.setCellValueFactory(new PropertyValueFactory<>("divisionId"));
+        customerLastUpdatedByCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdatedBy"));
+
+        appointmentEndCol.setCellValueFactory(new PropertyValueFactory<>("end"));
+        appointmentStartCol.setCellValueFactory(new PropertyValueFactory<>("start"));
+        appointmentIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        appointmentTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        Label placeholderLabel = new Label("Select a customer to view appointments.");
+        appointmentTableView.setPlaceholder(placeholderLabel);
+    }
+
+    /**
+     * closes window and returns to previous form
+     * @param actionEvent event propagated after clicking on Back button
+     */
     @FXML
-    public void onActionBackButton(ActionEvent actionEvent) {
+    public void closeWindow(ActionEvent actionEvent) {
         clearInfoDisplayText(infoDisplayText);
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
-    // navigates to Customer.fxml
+    /**
+     * navigate to Customer.fxml to add a new customer.
+     * @param actionEvent event propagated after clicking on Add button
+     * @throws IOException thrown if Customer.fxml is not found in `resources` directory
+     */
     @FXML
-    public void onActionAddCustomerButton(ActionEvent actionEvent) throws IOException {
+    public void navigateToCustomerFormToAddCustomer(ActionEvent actionEvent) throws IOException {
         clearInfoDisplayText(infoDisplayText);
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        FxUtil.navigateTo("Customer.fxml", stage, null);
+        FxUtil.navigateTo("Customer.fxml", stage, this::loadCustomers);
     }
 
-    // navigates to Customer.fxml only if a customer is selected from customerTableView. Sends that customer
-    // to Customer.fxml's controller
+    /**
+     * navigate to Customer.fxml to modify the currently selected customer (displays error if no customer
+     * is selected).
+     * @param actionEvent event propagated after clicking on Modify button
+     * @throws IOException thrown if Customer.fxml is not found in `resources` directory
+     * @throws SQLException thrown if invalid customer is sent to CustomerController
+     */
     @FXML
-    public void onActionModifyCustomerButton(ActionEvent actionEvent) throws IOException, SQLException {
+    public void navigateToCustomerFormToModifyCustomer(ActionEvent actionEvent) throws IOException, SQLException {
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
         if (customer != null) {
             FXMLLoader loader = new FXMLLoader();
@@ -181,9 +204,13 @@ public class CustomerListController implements Initializable {
         }
     }
 
-    // deletes customer if they have zero scheduled appointments.
+    /**
+     * deletes currently selected customer from database. Updates customerTableView with removed customer. Displays error
+     * if no customer is selected.
+     * @throws SQLException thrown if invalid customer is attempted to be deleted
+     */
     @FXML
-    public void onActionDeleteCustomerButton(ActionEvent actionEvent) throws SQLException {
+    public void deleteCustomer() throws SQLException {
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
         boolean hasAppointments = !appointmentTableView.getItems().isEmpty();
         if (hasAppointments) {
@@ -197,9 +224,14 @@ public class CustomerListController implements Initializable {
         }
     }
 
-    // navigates to Appointment.fxml only if a customer is selected from customerTableView.
-    // Sends the selected customer to Appointment.fxml's controller
-    public void onActionAddAppointmentButton(ActionEvent actionEvent) throws IOException, SQLException {
+    /**
+     * navigates to Appointment.fxml to add an appointment for currently selected customer. If no customer is selected
+     * an error message appears in the UI.
+     * @param actionEvent event propagated from clicking on `Add` button underneath AppointmentTableView
+     * @throws IOException thrown if Appointment.fxml is not found in `resources` directory
+     * @throws SQLException thrown if invalid customer is attempted to be deleted.
+     */
+    public void navigateToAppointmentFormToAddAppointment(ActionEvent actionEvent) throws IOException, SQLException {
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
         if (customer != null) {
             FXMLLoader loader = new FXMLLoader();
@@ -210,14 +242,20 @@ public class CustomerListController implements Initializable {
             appointmentController.sendCustomer(customer);
 
             Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
-            FxUtil.navigateToWithData(stage, loader, null);
+            FxUtil.navigateToWithData(stage, loader, this::loadAppointments);
         } else {
             displayInfoDisplayText("Select a customer to add an appointment for.", true, infoDisplayText);
         }
     }
 
-    // navigates to Appointment.fxml only if an appointment is selected in appointmentTableView
-    public void onActionModifyAppointmentButton(ActionEvent actionEvent) throws IOException, SQLException {
+    /**
+     * navigates to Appointment.fxml to modify currently selected appointment for currently selected customer. Displays
+     * an error if no appointment is selected.
+     * @param actionEvent event propagated from clicking on `Modify` button underneath the appointmentTableView.
+     * @throws IOException thrown if Appointment.fxml is not found in `resources` directory
+     */
+    @FXML
+    public void navigateToAppointmentFormToModifyAppointment(ActionEvent actionEvent) throws IOException {
         Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
         if (appointment != null) {
@@ -229,13 +267,17 @@ public class CustomerListController implements Initializable {
             appointmentController.sendCustomerAndAppointment(customer, appointment);
 
             Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
-            FxUtil.navigateToWithData(stage, loader, null);
+            FxUtil.navigateToWithData(stage, loader, this::loadAppointments);
         } else {
             displayInfoDisplayText("Select an appointment to modify.", true, infoDisplayText);
         }
     }
 
-    public void onActionDeleteAppointmentButton(ActionEvent actionEvent) throws SQLException {
+    /**
+     * deletes selected customer's appointment if an appointment is selected. Displays an error if no appointment is selected.
+     * @throws SQLException thrown if invalid appointment is attempted to be deleted.
+     */
+    public void deleteAppointment() throws SQLException {
         Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
         Customer customer = customerTableView.getSelectionModel().getSelectedItem();
         if (appointment != null) {
@@ -247,6 +289,10 @@ public class CustomerListController implements Initializable {
         }
     }
 
+    /**
+     * helper method to reload customer list after performing an Add/Modify/Delete function. Public to be used in other controllers
+     * that need to reload the list of customers.
+     */
     public void loadCustomers() {
         try {
             customerTableView.setItems(customerDAO.getAllCustomers());
@@ -255,16 +301,13 @@ public class CustomerListController implements Initializable {
         }
     }
 
-//    private void clearInfoDisplayText() {
-//        infoDisplayText.setText("");
-//    }
-
-//    private void displayInfoDisplayText(String info, boolean isError) {
-//        if (isError) {
-//            infoDisplayText.setFill(Color.RED);
-//        } else {
-//            infoDisplayText.setFill(Color.GREEN);
-//        }
-//        infoDisplayText.setText(info);
-//    }
+    /**
+     * helper method to reload appointment list after modifying/deleting/adding appointments.
+     * @throws SQLException thrown by appointmentDAO
+     */
+    private void loadAppointments() throws SQLException {
+        Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+       appointmentDAO.getAllAppointments();
+       appointmentTableView.setItems(appointmentDAO.getAllCustomerAppointments(customer));
+    }
 }

@@ -11,44 +11,38 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.appointment_schedule.controller.ContactScheduleController">
-   <children>
-      <VBox alignment="CENTER" spacing="10.0">
-         <children>
-            <Label text="Contacts Schedule">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <HBox alignment="CENTER_LEFT" spacing="15.0">
-               <children>
-                  <Label text="Contact:" />
-                  <ComboBox fx:id="contactComboBox" onAction="#onActionContactComboBox" prefWidth="150.0" />
-               </children>
-            </HBox>
-            <TableView fx:id="appointmentTableView" prefHeight="200.0">
-              <columns>
-                <TableColumn fx:id="idCol" prefWidth="75.0" text="ID" />
-                <TableColumn fx:id="titleCol" prefWidth="75.0" text="Title" />
-                  <TableColumn fx:id="typeCol" prefWidth="75.0" text="Type" />
-                  <TableColumn fx:id="descriptionCol" prefWidth="160.0" text="Description" />
-                  <TableColumn fx:id="startCol" prefWidth="150.0" text="Start" />
-                  <TableColumn fx:id="endCol" prefWidth="150.0" text="End" />
-                  <TableColumn fx:id="customerIdCol" prefWidth="75.0" text="Customer ID" />
-              </columns>
-            </TableView>
-            <HBox alignment="CENTER_RIGHT">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#onActionBackButton" text="Back" />
-               </children>
-            </HBox>
-         </children>
-         <padding>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </padding>
-      </VBox>
-   </children>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.appointment_schedule.controller.ContactScheduleController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+    <VBox alignment="CENTER" spacing="10.0">
+        <padding>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+        </padding>
+        <Label text="Contacts Schedule">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Label>
+        <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <Label text="Contact:"/>
+            <ComboBox fx:id="contactComboBox" onAction="#fillAppointmentTableBySelectedContact"
+                      prefWidth="150.0"/>
+        </HBox>
+        <TableView fx:id="appointmentTableView" prefHeight="200.0">
+            <columns>
+                <TableColumn fx:id="idCol" prefWidth="75.0" text="ID"/>
+                <TableColumn fx:id="titleCol" prefWidth="75.0" text="Title"/>
+                <TableColumn fx:id="typeCol" prefWidth="75.0" text="Type"/>
+                <TableColumn fx:id="descriptionCol" prefWidth="160.0" text="Description"/>
+                <TableColumn fx:id="startCol" prefWidth="150.0" text="Start"/>
+                <TableColumn fx:id="endCol" prefWidth="150.0" text="End"/>
+                <TableColumn fx:id="customerIdCol" prefWidth="75.0" text="Customer ID"/>
+            </columns>
+        </TableView>
+        <HBox alignment="CENTER_RIGHT">
+            <Button mnemonicParsing="false" onAction="#closeWindow" text="Back"/>
+        </HBox>
+    </VBox>
 </AnchorPane>

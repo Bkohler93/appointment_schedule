@@ -1,7 +1,6 @@
 package com.example.appointment_schedule.controller;
 
 
-import com.example.appointment_schedule.Main;
 import com.example.appointment_schedule.auth.Auth;
 import com.example.appointment_schedule.dao.user.UserDAO;
 import com.example.appointment_schedule.dao.user.UserDAOImpl;
@@ -12,7 +11,6 @@ import com.example.appointment_schedule.util.Logger;
 import com.example.appointment_schedule.util.TimeUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -25,30 +23,31 @@ import java.sql.Timestamp;
 import java.time.ZoneId;
 
 public class LoginController {
-    @FXML
-    public TextField usernameTextField;
-    @FXML
-    public TextField passwordTextField;
-    @FXML
-    public Text errorTextField;
     private final UserDAO userDao = new UserDAOImpl();
     @FXML
-    public Text titleText;
+    private TextField usernameTextField;
     @FXML
-    public Label usernameLabel;
+    private TextField passwordTextField;
     @FXML
-    public Label passwordLabel;
+    private Text errorTextField;
     @FXML
-    public Button loginButton;
+    private Text titleText;
     @FXML
-    public Button registerButton;
+    private Label usernameLabel;
     @FXML
-    public Label locationLabel;
+    private Label passwordLabel;
     @FXML
-    public Label zoneIdLabel;
+    private Button loginButton;
+    @FXML
+    private Button registerButton;
+    @FXML
+    private Label locationLabel;
+    @FXML
+    private Label zoneIdLabel;
 
-    /**
-     * sets form fields and adds listeners on Login.fxml
+    /** LAMBDA EXPRESSIONS HERE!
+     * sets form fields and adds listeners on Login.fxml. Uses lambda expressions to clear any errors when
+     * modifying a text field.
      */
     @FXML
     public void initialize() {
@@ -64,15 +63,22 @@ public class LoginController {
                 errorTextField.setText(""));
 
         // hides password by turning all characters into "*" in text field, but saving password in `password` variable
-        passwordTextField.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            errorTextField.setText("");
-        });
+        passwordTextField.textProperty().addListener((observableValue, oldValue, newValue) ->
+            errorTextField.setText(""));
     }
 
-
-    public void onActionLoginButton(ActionEvent actionEvent) {
+    /**
+     * uses currently entered username/password to retrieve a user with matching credentials. If no user is found
+     * an error is displayed and the program does not navigate to the next form.
+     * @param actionEvent event propagated after clicking on `Login` button
+     */
+    @FXML
+    public void login(ActionEvent actionEvent) {
+        //retrieve form fields
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
+
+        // attempt to retrieve user from DB. Display error if no
         try {
             User user = userDao.getUserByUsernamePw(username, password);
             if (user == null) {
@@ -82,15 +88,10 @@ public class LoginController {
                 Auth.login(user);
                 Logger.login(username, password, true);
                 System.out.println("logged in as " + user.getUserName());
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(Main.class.getResource("AppointmentSchedule.fxml"));
-                loader.load();
 
-                AppointmentScheduleController appointmentScheduleController = loader.getController();
-
+                // navigate to Appointment View
                 Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
-                FxUtil.navigateToWithData(stage, loader, null);
-                // send to AppointmentSchedule with user data
+                FxUtil.navigateTo("AppointmentSchedule.fxml", stage, null);
             }
         } catch (SQLException | IOException e) {
             errorTextField.setText(Localization.text("Check your username and password"));
@@ -99,10 +100,9 @@ public class LoginController {
 
     /**
      * Attempts to add a new user to the database using username and password fields.
-     * @param actionEvent event propagated from button press
      */
     @FXML
-    public void onActionRegisterButton(ActionEvent actionEvent) {
+    public void register() {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
@@ -115,10 +115,5 @@ public class LoginController {
         } catch (SQLException e) {
             errorTextField.setText(Localization.text("A user already exists with that username") + ".");
         }
-    }
-
-    @FXML
-    public void onActionUsernameTextField(ActionEvent actionEvent) {
-        errorTextField.setText("");
     }
 }

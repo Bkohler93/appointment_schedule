@@ -15,5 +15,7 @@ public interface ContactDAO {
     public void deleteContact(Contact contact);
     public void updateContact(Contact contact);
     public Contact getContactById(int id) throws SQLException;
+    public Contact getContactByName(String name) throws SQLException;
     public int getContactIdByName(String value) throws SQLException;
+
 }

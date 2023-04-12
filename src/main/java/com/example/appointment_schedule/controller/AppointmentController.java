@@ -12,6 +12,7 @@ import com.example.appointment_schedule.util.FxUtil;
 import com.example.appointment_schedule.util.TimeUtil;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -34,31 +35,54 @@ import java.util.stream.Collectors;
  * @author Brett Kohler
  */
 public class AppointmentController implements Initializable {
-    public TextField typeTextField;
-    public TextField startDateTextField;
-    public TextField startTimeTextField;
-    public TextField endDateTextField;
-    public TextField endTimeTextField;
-    public TextField customerIdTextField;
-    public TextField userIdTextField;
-    public Text appointmentFormTitleText;
-    public TextField idTextField;
-    public TextField titleTextField;
-    public TextField descriptionTextField;
-    public TextField locationTextField;
-    public ComboBox<String> contactComboBox;
-    public TextField updatedByTextField;
-    public TextField updateTimeTextField;
-    public TextField updateDateTextField;
-    public TextField createdByTextField;
-    public TextField createTimeTextField;
-    public TextField createDateTextField;
-    public Text infoDisplayText;
-    public VBox formContainerVBox;
+
     private Customer customer;
     private Appointment appointment;
     private final ContactDAO contactDAO = new ContactDAOImpl();
     private final AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
+    @FXML
+    private TextField typeTextField;
+    @FXML
+    private TextField startDateTextField;
+    @FXML
+    private TextField startTimeTextField;
+    @FXML
+    private TextField endDateTextField;
+    @FXML
+    private TextField endTimeTextField;
+    @FXML
+    private TextField customerIdTextField;
+    @FXML
+    private TextField userIdTextField;
+    @FXML
+    private Text appointmentFormTitleText;
+    @FXML
+    private TextField idTextField;
+    @FXML
+    private TextField titleTextField;
+    @FXML
+    private TextField descriptionTextField;
+    @FXML
+    private TextField locationTextField;
+    @FXML
+    private ComboBox<String> contactComboBox;
+    @FXML
+    private TextField updatedByTextField;
+    @FXML
+    private TextField updateTimeTextField;
+    @FXML
+    private TextField updateDateTextField;
+    @FXML
+    private TextField createdByTextField;
+    @FXML
+    private TextField createTimeTextField;
+    @FXML
+    private TextField createDateTextField;
+    @FXML
+    private Text infoDisplayText;
+    @FXML
+    private VBox formContainerVBox;
+
 
     /**
      * When adding a new appointment for a specific customer, the customer must be known
@@ -76,7 +100,7 @@ public class AppointmentController implements Initializable {
      * @param customer customer to send
      * @param appointment appointment to send
      */
-    public void sendCustomerAndAppointment(Customer customer, Appointment appointment) throws SQLException {
+    public void sendCustomerAndAppointment(Customer customer, Appointment appointment) {
         this.customer = customer;
         this.appointment = appointment;
     }
@@ -227,7 +251,8 @@ public class AppointmentController implements Initializable {
      * closes current window after user clicks on Cancel button
      * @param actionEvent event propagated from user click
      */
-    public void onActionCancelButton(ActionEvent actionEvent) {
+    @FXML
+    public void closeWindow(ActionEvent actionEvent) {
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
@@ -237,7 +262,8 @@ public class AppointmentController implements Initializable {
      * @param actionEvent event sent from pressing Save Button on Appointment.fxml
      * @throws SQLException thrown by appointmentDAO
      */
-    public void onActionSaveButton(ActionEvent actionEvent) throws SQLException {
+    @FXML
+    public void saveAppointment(ActionEvent actionEvent) throws SQLException {
 
         // retrieve inputs from form fields
         int id = Integer.parseInt(idTextField.getText());

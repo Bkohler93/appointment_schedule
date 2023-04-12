@@ -10,6 +10,7 @@ import com.example.appointment_schedule.util.TimeUtil;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -24,36 +25,62 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * provides functionality to the ContactSchedule.fxml form.
+ * @author Brett Kohler
+ */
 public class ContactScheduleController implements Initializable {
-    private AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
-    private ContactDAO contactDAO = new ContactDAOImpl();
-    public ComboBox<String> contactComboBox;
-    public TableView<Appointment> appointmentTableView;
-    public TableColumn<Appointment, Integer> idCol;
-    public TableColumn<Appointment, String> titleCol;
-    public TableColumn<Appointment, String> typeCol;
-    public TableColumn<Appointment, String> descriptionCol;
-    public TableColumn<Appointment, String> startCol;
-    public TableColumn<Appointment, String> endCol;
-    public TableColumn<Appointment, Integer> customerIdCol;
+    private final AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
+    private final ContactDAO contactDAO = new ContactDAOImpl();
+    @FXML
+    private ComboBox<String> contactComboBox;
+    @FXML
+    private TableView<Appointment> appointmentTableView;
+    @FXML
+    private TableColumn<Appointment, Integer> idCol;
+    @FXML
+    private TableColumn<Appointment, String> titleCol;
+    @FXML
+    private TableColumn<Appointment, String> typeCol;
+    @FXML
+    private TableColumn<Appointment, String> descriptionCol;
+    @FXML
+    private TableColumn<Appointment, String> startCol;
+    @FXML
+    private TableColumn<Appointment, String> endCol;
+    @FXML
+    private TableColumn<Appointment, Integer> customerIdCol;
 
-    public void onActionContactComboBox(ActionEvent actionEvent) throws Exception {
-        try {
+    /**
+     * fills the TableView of appointments with contact's appointments after selecting a contact
+     * from the Contact ComboBox (represented as a String). The retrieved contact includes
+     * the contactId field, allowing the retrieval of appointments with contactId's that match the selected Contact.
+     * @throws SQLException exception thrown by ContactDAO or AppointmentDAO from invalid contact being selected.
+     */
+    public void fillAppointmentTableBySelectedContact() throws SQLException {
            String contactName = contactComboBox.getValue();
-           Contact selectedContact = contactDAO.getContactById(contactDAO.getContactIdByName(contactName));
+           Contact selectedContact = contactDAO.getContactByName(contactName);
            appointmentTableView.setItems(appointmentDAO.getAllContactAppointments(selectedContact));
-        } catch (Exception e) {
-            throw new Exception(e);
-        }
     }
 
-    public void onActionBackButton(ActionEvent actionEvent) {
+    /**
+     * Closes the ContactSchedule window to send user back to the main Appointment list form.
+     * @param actionEvent event propagated from clicking on the Back button.
+     */
+    public void closeWindow(ActionEvent actionEvent) {
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
+    /**
+     * initializes columns in Appointments TableView with correct class attributes
+     * @param url not used, required by super's `initialize` method
+     * @param resourceBundle not used, required by super's `initialize` method
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // set up TableView columns with correct class properties
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
