@@ -148,9 +148,9 @@
                         </TableView>
                         <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="5.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#onActionAddAppointmentButton" text="Add" />
-                              <Button mnemonicParsing="false" onAction="#onActionModifyAppointmentButton" text="Modify" />
-                              <Button mnemonicParsing="false" onAction="#onActionDeleteAppointmentButton" text="Delete" />
+                              <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToAddAppointment" text="Add" />
+                              <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToModifyAppointment" text="Modify" />
+                              <Button mnemonicParsing="false" onAction="#deleteSelectedAppointment" text="Delete" />
                            </children>
                            <VBox.margin>
                               <Insets top="5.0" />
@@ -168,8 +168,8 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" spacing="40.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onActionCancelButton" text="Cancel" />
-                  <Button mnemonicParsing="false" onAction="#onActionSaveButton" text="Save" />
+                  <Button mnemonicParsing="false" onAction="#navigateToPreviousForm" text="Cancel" />
+                  <Button mnemonicParsing="false" onAction="#saveUpdatedCustomer" text="Save" />
                </children>
                <VBox.margin>
                   <Insets bottom="40.0" right="40.0" />

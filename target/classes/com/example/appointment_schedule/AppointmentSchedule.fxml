@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.appointment_schedule.controller.AppointmentScheduleController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.appointment_schedule.controller.AppointmentScheduleController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -38,19 +38,19 @@
             </Text>
             <HBox alignment="CENTER_LEFT">
                <children>
-                  <RadioButton fx:id="byMonthRadioButton" mnemonicParsing="false" onAction="#onActionByMonthRadioButton" prefWidth="120.0" text="By month">
+                  <RadioButton fx:id="byMonthRadioButton" mnemonicParsing="false" onAction="#fillAppointmentsByMonthYear" prefWidth="120.0" text="By month">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </RadioButton>
-                  <RadioButton fx:id="byWeekRadioButton" mnemonicParsing="false" onAction="#onActionByWeekRadioButton" prefWidth="150.0" text="By week" />
-                  <Button mnemonicParsing="false" onAction="#onActionPreviousViewButton" text="&lt;">
+                  <RadioButton fx:id="byWeekRadioButton" mnemonicParsing="false" onAction="#fillAppointmentsByWeek" prefWidth="150.0" text="By week" />
+                  <Button mnemonicParsing="false" onAction="#fillAppointmentsBasedOnPreviousTimeInterval" text="&lt;">
                      <HBox.margin>
                         <Insets right="8.0" />
                      </HBox.margin>
                   </Button>
                   <Label fx:id="selectedTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefWidth="150.0" text="Dec 2023" textAlignment="CENTER" />
-                  <Button mnemonicParsing="false" onAction="#onActionNextViewButton" text="&gt;">
+                  <Button mnemonicParsing="false" onAction="#fillAppointmentsBasedOnNextTimeInterval" text="&gt;">
                      <HBox.margin>
                         <Insets left="8.0" />
                      </HBox.margin>
@@ -110,7 +110,7 @@
                      </HBox.margin>
                   </TextField>
                   <TextField fx:id="timeEndInputTextField" prefWidth="50.0" promptText="23:59" />
-                  <Button fx:id="adjustAppointmentSaveButton" mnemonicParsing="false" onAction="#onActionAdjustAppointmentSaveButton" text="Save">
+                  <Button fx:id="adjustAppointmentSaveButton" mnemonicParsing="false" onAction="#saveAdjustedAppointmentDateTime" text="Save">
                      <HBox.margin>
                         <Insets left="30.0" />
                      </HBox.margin>
@@ -122,17 +122,17 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onActionAddButton" text="Add">
+                  <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToAddAppointment" text="Add">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#onActionModifyButton" text="Modify">
+                  <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToModifyAppointment" text="Modify">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onActionCancelButton" text="Cancel" />
+                  <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelSelectedAppointment" text="Cancel" />
                </children>
             </HBox>
             <Text fx:id="infoDisplayText" strokeType="OUTSIDE" strokeWidth="0.0" />
@@ -160,7 +160,7 @@
                         </Label>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <ComboBox fx:id="typeReportComboBox" onAction="#onActionTypeReportComboBox" prefWidth="90.0" />
+                              <ComboBox fx:id="typeReportComboBox" onAction="#displayNumberOfAppointmentsByType" prefWidth="90.0" />
                               <Text fx:id="typeReportText" strokeType="OUTSIDE" strokeWidth="0.0" text="7">
                                  <HBox.margin>
                                     <Insets left="8.0" />
@@ -183,7 +183,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="5.0">
                            <children>
                               <Spinner fx:id="byMonthReportYearSpinner" prefWidth="100.0" />
-                              <ComboBox fx:id="byMonthReportMonthComboBox" onAction="#onActionByMonthReportComboBox" prefWidth="90.0" />
+                              <ComboBox fx:id="byMonthReportMonthComboBox" onAction="#displayNumberOfAppointmentsByMonthYear" prefWidth="90.0" />
                               <Text fx:id="byMonthReportText" strokeType="OUTSIDE" strokeWidth="0.0" text="8">
                                  <HBox.margin>
                                     <Insets left="8.0" />
@@ -205,7 +205,7 @@
                         </Label>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <ComboBox prefWidth="90.0" fx:id="byCountryReportComboBox" onAction="#onActionByCountryComboBox"/>
+                              <ComboBox prefWidth="90.0" fx:id="byCountryReportComboBox" onAction="#displayNumberOfAppointmentsByCountry"/>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="" fx:id="byCountryReportText">
                                  <HBox.margin>
                                     <Insets left="8.0" />
@@ -219,8 +219,8 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" text="Contacts" onAction="#onActionContactsButton"/>
-                  <Button mnemonicParsing="false" onAction="#onActionCustomersButton" text="Customers" />
+                  <Button mnemonicParsing="false" text="Contacts" onAction="#navigateToContactSchedule"/>
+                  <Button mnemonicParsing="false" onAction="#navigateToCustomerList" text="Customers" />
                </children>
             </HBox>
          </children>

@@ -47,15 +47,15 @@
                      <children>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#onActionBackButton" text="Back" />
+                              <Button mnemonicParsing="false" onAction="#closeWindow" text="Back" />
                            </children>
                         </HBox>
                         <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                         <HBox alignment="CENTER_RIGHT" spacing="10.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#onActionAddCustomerButton" text="Add" />
-                              <Button mnemonicParsing="false" onAction="#onActionModifyCustomerButton" text="Modify" />
-                              <Button mnemonicParsing="false" onAction="#onActionDeleteCustomerButton" text="Delete" />
+                              <Button mnemonicParsing="false" onAction="#navigateToCustomerFormToAddCustomer" text="Add" />
+                              <Button mnemonicParsing="false" onAction="#navigateToCustomerFormToModifyCustomer" text="Modify" />
+                              <Button mnemonicParsing="false" onAction="#deleteCustomer" text="Delete" />
                            </children>
                         </HBox>
                      </children>
@@ -83,9 +83,9 @@
                   </TableView>
                   <HBox alignment="CENTER_RIGHT" spacing="10.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onActionAddAppointmentButton" text="Add" />
-                        <Button mnemonicParsing="false" onAction="#onActionModifyAppointmentButton" text="Modify" />
-                        <Button mnemonicParsing="false" onAction="#onActionDeleteAppointmentButton" text="Delete" />
+                        <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToAddAppointment" text="Add" />
+                        <Button mnemonicParsing="false" onAction="#navigateToAppointmentFormToModifyAppointment" text="Modify" />
+                        <Button mnemonicParsing="false" onAction="#deleteAppointment" text="Delete" />
                      </children>
                   </HBox>
                </children>

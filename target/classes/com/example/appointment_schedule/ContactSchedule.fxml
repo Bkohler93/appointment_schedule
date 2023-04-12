@@ -23,7 +23,7 @@
             <HBox alignment="CENTER_LEFT" spacing="15.0">
                <children>
                   <Label text="Contact:" />
-                  <ComboBox fx:id="contactComboBox" onAction="#onActionContactComboBox" prefWidth="150.0" />
+                  <ComboBox fx:id="contactComboBox" onAction="#fillAppointmentTableBySelectedContact" prefWidth="150.0" />
                </children>
             </HBox>
             <TableView fx:id="appointmentTableView" prefHeight="200.0">
@@ -39,7 +39,7 @@
             </TableView>
             <HBox alignment="CENTER_RIGHT">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onActionBackButton" text="Back" />
+                  <Button mnemonicParsing="false" onAction="#closeWindow" text="Back" />
                </children>
             </HBox>
          </children>
