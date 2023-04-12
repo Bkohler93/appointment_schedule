@@ -6,14 +6,13 @@ import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 
+/**
+ * interface for accessing entities from the Country table in a database.
+ * @author Brett Kohler
+ */
 public interface CountryDAO {
-    public ObservableList<Country> getAllCountries() throws SQLException;
-    public void addCountry(Country country);
-    public void deleteCountry(Country country);
-    public void updateCountry(Country country);
-    public Country getCountryByName(String selectedCountryName) throws SQLException;
-
-    public Country getCountryById(int countryId) throws SQLException;
-
+    ObservableList<Country> getAllCountries() throws SQLException;
+    Country getCountryByName(String selectedCountryName) throws SQLException;
+    Country getCountryById(int countryId) throws SQLException;
     int getCountryAppointmentCount(String country) throws SQLException;
 }

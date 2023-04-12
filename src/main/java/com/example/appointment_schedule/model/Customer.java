@@ -3,6 +3,10 @@ package com.example.appointment_schedule.model;
 
 import java.sql.Timestamp;
 
+/**
+ * model class for the Customer entity from database. Includes matching fields from database schema and getters/setters
+ * @author Brett Kohler
+ */
 public class Customer {
     private int id;
     private String name;

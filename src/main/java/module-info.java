@@ -2,6 +2,7 @@ module com.example.appointment_schedule {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
+    requires mysql.connector.j;
 
 
     opens com.example.appointment_schedule to javafx.fxml;

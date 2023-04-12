@@ -8,6 +8,7 @@ import java.sql.Time;
 
 /**
  * @author Brett Kohler
+ * contains constant values to be used throughout the program
  * @author  <a href="https://stackoverflow.com/questions/12517978/java-constant-examples-create-a-java-file-having-only-constants">reference</a>
  */
 public final class Constants {
@@ -21,16 +22,6 @@ public final class Constants {
 
     public static final ObservableList<String> months = FXCollections.observableArrayList("January", "February", "March", "April",
             "May", "June", "July", "August", "September", "October", "November", "December");
-
-    /**
-     * value of Part source label when part is inhouse
-     */
-    public static final String IN_HOUSE_LABEL = "Machine ID";
-
-    /**
-     * value of Part source label when part is outsourced
-     */
-    public static final String OUTSOURCED_LABEL = "Company Name";
 
     private static final String DB_PROTOCOL = "jdbc";
     private static final String DB_VENDOR = ":mysql:";

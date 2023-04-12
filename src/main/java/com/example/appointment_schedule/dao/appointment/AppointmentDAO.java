@@ -8,22 +8,25 @@ import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Collection;
 
+/**
+ * interface that templates a data access object for a data source.
+ * @author Brett Kohler
+ */
 public interface AppointmentDAO {
-    public ObservableList<Appointment> getAllAppointments() throws SQLException;
-    public ObservableList<Appointment> getAllCustomerAppointments(Customer customer) throws SQLException;
-    public void deleteAppointment(Appointment appointment) throws SQLException;
-    public void updateAppointment(Appointment appointment) throws SQLException;
-    public void addAppointment(Appointment appointment) throws SQLException;
+    void getAllAppointments() throws SQLException;
+    ObservableList<Appointment> getAllCustomerAppointments(Customer customer) throws SQLException;
+    void deleteAppointment(Appointment appointment) throws SQLException;
+    void updateAppointment(Appointment appointment) throws SQLException;
+    void addAppointment(Appointment appointment) throws SQLException;
 
-    public boolean hasOverlappingAppointments(Timestamp startDateTime, Timestamp endDateTime) throws SQLException;
-    public boolean hasOverlappingAppointments(Timestamp startDateTime, Timestamp endDateTime, Appointment appointmentToExclude) throws SQLException;
-    public Appointment getUpcomingAppointment() throws SQLException;
+    boolean hasOverlappingAppointments(Timestamp startDateTime, Timestamp endDateTime) throws SQLException;
+    boolean hasOverlappingAppointments(Timestamp startDateTime, Timestamp endDateTime, Appointment appointmentToExclude) throws SQLException;
+    Appointment getUpcomingAppointment() throws SQLException;
 
-    public ObservableList<Appointment> getAppointmentsByMonthYear(int month, int year) throws SQLException;
+    ObservableList<Appointment> getAppointmentsByMonthYear(int month, int year) throws SQLException;
 
-    public ObservableList<Appointment> getAppointmentsByWeek(String selectedWeekStartDate) throws SQLException;
+    ObservableList<Appointment> getAppointmentsByWeek(String selectedWeekStartDate) throws SQLException;
 
     int getNextId() throws SQLException;
 

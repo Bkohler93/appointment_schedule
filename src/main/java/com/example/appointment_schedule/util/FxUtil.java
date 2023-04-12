@@ -52,9 +52,7 @@ public class FxUtil {
      */
     public static void applyEventHandlersToTextFields(Node node, Text infoDisplayText) {
         if (node instanceof TextField textField) {
-            textField.setOnKeyTyped(event -> {
-                FxUtil.clearInfoDisplayText(infoDisplayText);
-            });
+            textField.setOnKeyTyped(event -> FxUtil.clearInfoDisplayText(infoDisplayText));
         } else if (node instanceof Parent parent) {
             for (Node child : parent.getChildrenUnmodifiable()) {
                 applyEventHandlersToTextFields(child, infoDisplayText);
@@ -121,14 +119,13 @@ public class FxUtil {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-    public static void displayDeleteErrorAlert(String itemType, String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Delete " + itemType + " Error");
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
-
+    /**
+     * displays information to a Text component. Errors appear in the color red and confirmations/notifications
+     * appear in green.
+     * @param info info to display
+     * @param isError false for error, true for confirmation/notification
+     * @param infoDisplayText Text component to display info on
+     */
     public static void displayInfoDisplayText(String info, boolean isError, Text infoDisplayText) {
         if (isError) {
             infoDisplayText.setFill(Color.RED);
@@ -138,6 +135,10 @@ public class FxUtil {
         infoDisplayText.setText(info);
     }
 
+    /**
+     * Clears a Text component to make any notifications/errors disappear
+     * @param infoDisplayText Text component to clear
+     */
     public static void clearInfoDisplayText(Text infoDisplayText) {
         infoDisplayText.setText("");
     }

@@ -10,9 +10,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+/**
+ * implementation for CustomerDAO to access Customer data from a MySQL database
+ * @author Brett Kohler
+ */
 public class CustomerDAOImpl implements CustomerDAO{
     private final ObservableList<Customer> customers = FXCollections.observableArrayList();
 
+    /**
+     * retrieves all customers from DB and places them into an ObservableList to be used in fxml forms.
+     * @return list of customers
+     * @throws SQLException thrown by invalid SQL syntax
+     */
     @Override
     public ObservableList<Customer> getAllCustomers() throws SQLException {
         String sql = "select * from Customers";
@@ -42,12 +51,22 @@ public class CustomerDAOImpl implements CustomerDAO{
         }
     }
 
+    /**
+     * deletes a customer from database
+     * @param customer customer to delete
+     * @throws SQLException thrown by invalid SQL syntax, invalid id.
+     */
     @Override
     public void deleteCustomer(Customer customer) throws SQLException {
         String sql = "delete from Customers where Customer_ID = " + customer.getId();
         Query.makeQuery(sql);
     }
 
+    /**
+     * updates a customer with matching id as parameterized `customer`
+     * @param customer new customer data to update
+     * @throws SQLException thrown by invalid SQL syntax.
+     */
     @Override
     public void updateCustomer(Customer customer) throws SQLException {
         int id = customer.getId();
@@ -69,6 +88,11 @@ public class CustomerDAOImpl implements CustomerDAO{
         Query.makeQuery(sql);
     }
 
+    /**
+     * adds a customer to database
+     * @param customer customer to add
+     * @throws SQLException thrown by invalid SQL syntax.
+     */
     @Override
     public void addCustomer(Customer customer) throws SQLException {
         String name = customer.getName();
@@ -88,6 +112,11 @@ public class CustomerDAOImpl implements CustomerDAO{
         Query.makeQuery(sql);
     }
 
+    /**
+     * retrieves the next Customer_ID from database
+     * @return the next id
+     * @throws SQLException thrown by invalid SQL syntax
+     */
     @Override
     public int getNextId() throws SQLException {
         String sql = "SELECT MAX(Customer_ID) + 1 AS next_id FROM Customers";

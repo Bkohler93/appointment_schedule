@@ -6,13 +6,13 @@ import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 
+
+/**
+ * interface for accessing entities from the FirstLevelDivision table in a database.
+ * @author Brett Kohler
+ */
 public interface FirstLevelDivisionDAO {
-    public ObservableList<FirstLevelDivision> getAllFirstLevelDivisions() throws SQLException;
-    public void addFirstLevelDivision(FirstLevelDivision firstLevelDivision);
-    public void deleteFirstLevelDivision(FirstLevelDivision firstLevelDivision);
-    public void updateFirstLevelDivision(FirstLevelDivision firstLevelDivision);
-
-    public FirstLevelDivision getFirstLevelDivisionById(int divisionId) throws SQLException;
-
-    public FirstLevelDivision getFirstLevelDivisionByName(String name) throws SQLException;
+    ObservableList<FirstLevelDivision> getAllFirstLevelDivisions() throws SQLException;
+    FirstLevelDivision getFirstLevelDivisionById(int divisionId) throws SQLException;
+    FirstLevelDivision getFirstLevelDivisionByName(String name) throws SQLException;
 }

@@ -13,41 +13,11 @@ import java.time.ZonedDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Handles formatting and time conversions to different timezones
+ * @author Brett Kohler
+ */
 public class TimeUtil {
-    public static void main(String[] args) {
-
-        /// testing formValueToUTCTimestamp
-        String date = "2023/04/06";
-        String time = "15:30";
-        System.out.println("Resultant Timestamp: " +formValueToUTCTimestamp(date, time));
-
-
-        /// testing areDatesBetween()
-        Timestamp proposedValidStart = Timestamp.valueOf("2023-04-06 09:00:00");
-        Timestamp proposedValidEnd = Timestamp.valueOf("2023-04-06 10:00:00");
-        Timestamp proposedInvalidStart = Timestamp.valueOf("2023-04-06 16:00:00");
-        Timestamp proposedInvalidEnd = Timestamp.valueOf("2023-04-06 18:00:00");
-        Time businessStart = Time.valueOf("13:00:00");
-        Time businessEnd = Time.valueOf("03:00:00");
-
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
-        Time validStartTimeUTC = Time.valueOf(timeFormat.format(proposedValidStart.getTime()));
-        Time validEndTimeUTC =Time.valueOf(timeFormat.format(proposedValidEnd.getTime()));
-        Time invalidStartTimeUTC = Time.valueOf(timeFormat.format(proposedInvalidStart.getTime()));
-        Time invalidEndTimeUTC = Time.valueOf(timeFormat.format(proposedInvalidEnd.getTime()));
-
-        if (areDatesBetween(validStartTimeUTC, validEndTimeUTC, businessStart, businessEnd)) {
-            System.out.println("PASS: Valid times accepted by areDatesBetween()");
-        } else {
-            System.out.println("FAIL: Valid times not accepted by areDatesBetween()");
-        }
-
-        if (!areDatesBetween(invalidStartTimeUTC, invalidEndTimeUTC, businessStart, businessEnd)) {
-            System.out.println("PASS: Invalid times not accepted by areDatesBetween()");
-        } else {
-            System.out.println("FAIL: Invalid times accepted by areDatesBetween()");
-        }
-    }
 
     /**
      * Uses a regex with format `yyyy:MM:dd` to check if a string matches the regex
@@ -195,21 +165,36 @@ public class TimeUtil {
      * @param requiredEnd Time required for `end` to fall behind
      * @return true if `start` and `end` fall between `requiredStart` and `requiredEnd`, false if they don't
      */
-    public static boolean areDatesBetween(Time start, Time end, Time requiredStart, Time requiredEnd) {
+    public static boolean hasConflictingTimes(Time start, Time end, Time requiredStart, Time requiredEnd) {
 
-        return start.after(requiredStart) && end.before(requiredEnd);
+        return !start.after(requiredStart) || !end.before(requiredEnd);
     }
 
+    /**
+     * converts a ZonedDateTime to UTC timestamp
+     * @param now time to convert
+     * @return Timestamp in UTC
+     */
     public static Timestamp zonedToUTCTimestamp(ZonedDateTime now) {
         ZonedDateTime nowUTC = now.withZoneSameInstant(ZoneId.of("UTC"));
         LocalDateTime nowUTCLocal = nowUTC.toLocalDateTime();
         return Timestamp.valueOf(nowUTCLocal);
     }
 
+    /**
+     * return the current year
+     * @return the year
+     */
     public static int getYear() {
         return LocalDate.now().getYear();
     }
 
+    /**
+     * converts a month name into a corresponding integer in order of months (Jan = 1, Feb = 2, ...)
+     * defaults to -1 if `selectedMonth` is invalid
+     * @param selectedMonth name of month to convert
+     * @return month identifier
+     */
     public static int monthStringToInt(String selectedMonth) {
         switch (selectedMonth) {
             case "January" -> { return 1; }

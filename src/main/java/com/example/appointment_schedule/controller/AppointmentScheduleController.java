@@ -578,7 +578,7 @@ public class AppointmentScheduleController implements Initializable {
         String endTimeEST = timeFormat.format(endEST.getTime());
 
         // use formatted EST times to check if valid times and within business hours. Returns from function if invalid
-        if (!TimeUtil.areDatesBetween(Time.valueOf(startTimeEST),Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
+        if (TimeUtil.hasConflictingTimes(Time.valueOf(startTimeEST), Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
             FxUtil.displayInfoDisplayText("One or more proposed appointment times are outside of business hours (8am-10pm EST).", true, infoDisplayText);
             return;
         }

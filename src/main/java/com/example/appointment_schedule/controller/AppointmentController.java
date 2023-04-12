@@ -297,7 +297,7 @@ public class AppointmentController implements Initializable {
         String endTimeEST = timeFormat.format(endEST.getTime());
 
         // check if proposed appointment times conflict with business hours
-        if (!TimeUtil.areDatesBetween(Time.valueOf(startTimeEST),Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
+        if (TimeUtil.hasConflictingTimes(Time.valueOf(startTimeEST), Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
             FxUtil.displayInfoDisplayText("One or more proposed appointment times are outside of business hours (8am-10pm EST).", true, infoDisplayText);
             return;
         }

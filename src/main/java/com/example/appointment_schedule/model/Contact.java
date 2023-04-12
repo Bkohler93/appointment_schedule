@@ -1,6 +1,10 @@
 package com.example.appointment_schedule.model;
 
 
+/**
+ * model class for the Contact entity from database. Includes matching fields from database schema and getters/setters
+ * @author Brett Kohler
+ */
 public class Contact {
     private int id;
     private String name;

@@ -10,8 +10,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+
+/**
+ * implementation for FirstLevelDivisionDAO to retrieve FirstLevelDivision data from a MySQL database
+ * @author Brett Kohler
+ */
 public class FirstLevelDivisionDAOImpl implements FirstLevelDivisionDAO{
     private final ObservableList<FirstLevelDivision> divisions = FXCollections.observableArrayList();
+
+    /**
+     * retrieves all FirstLevelDivisions from database
+     * @return list of FirstLevelDivision data
+     * @throws SQLException thrown by invalid SQL syntax
+     */
     @Override
     public ObservableList<FirstLevelDivision> getAllFirstLevelDivisions() throws SQLException {
         String sql = "select * from First_Level_Divisions";
@@ -35,21 +46,12 @@ public class FirstLevelDivisionDAOImpl implements FirstLevelDivisionDAO{
         return divisions;
     }
 
-    @Override
-    public void addFirstLevelDivision(FirstLevelDivision firstLevelDivision) {
-
-    }
-
-    @Override
-    public void deleteFirstLevelDivision(FirstLevelDivision firstLevelDivision) {
-
-    }
-
-    @Override
-    public void updateFirstLevelDivision(FirstLevelDivision firstLevelDivision) {
-
-    }
-
+    /**
+     * retrieves a FirstLevelDivision with matching id as parameter `divisionId`
+     * @param divisionId id to search for
+     * @return FirstLevelDivision matching id
+     * @throws SQLException thrown by invalid SQL syntax
+     */
     @Override
     public FirstLevelDivision getFirstLevelDivisionById(int divisionId) throws SQLException {
         String sql = "select * from First_Level_Divisions where Division_ID = " + divisionId;
@@ -72,6 +74,12 @@ public class FirstLevelDivisionDAOImpl implements FirstLevelDivisionDAO{
         return null;
     }
 
+    /**
+     * retrieves a FirstLevelDivision with matching name as parameter `name`
+     * @param name name for search for
+     * @return FirstLevelDivision with matching name
+     * @throws SQLException thrown by invalid SQL syntax
+     */
     @Override
     public FirstLevelDivision getFirstLevelDivisionByName(String name) throws SQLException {
         String sql = "select * from First_Level_Divisions where Division = '" + name + "'";

@@ -7,6 +7,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Used to save information to Log files.
+ * @author Brett Kohler
+ */
 public class Logger {
     /**
      * writes login activity to "login_activity.txt". Times are written in UTC

@@ -1,6 +1,5 @@
 package com.example.appointment_schedule.dao.appointment;
 
-
 import com.example.appointment_schedule.dao.Query;
 import com.example.appointment_schedule.model.Appointment;
 import com.example.appointment_schedule.model.Contact;
@@ -12,29 +11,27 @@ import javafx.collections.ObservableList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 
+/**
+ * implementation of AppointmentDAO for accessing the Appointment Table from a SQL database.
+ */
 public class AppointmentDAOImpl implements AppointmentDAO {
     private final ObservableList<Appointment> appointments = FXCollections.observableArrayList();
 
     /**
      * retrieve all appointments from database
-     * @return observable list of appointments to be used in fxml components
      * @throws SQLException thrown when error with SQL commands
      */
     @Override
-    public ObservableList<Appointment> getAllAppointments() throws SQLException {
+    public void getAllAppointments() throws SQLException {
         String sql = "select * from Appointments";
         Query.makeQuery(sql);
 
         appointments.clear();
         ResultSet result = Query.getResult();
         fillAppointments(result);
-        return appointments;
     }
 
     /**
@@ -99,7 +96,6 @@ public class AppointmentDAOImpl implements AppointmentDAO {
      */
     @Override
     public void addAppointment(Appointment appointment) throws SQLException {
-        int appointmentId = appointment.getId();
         String title = appointment.getTitle();
         String description = appointment.getDescription();
         String location = appointment.getLocation();
@@ -159,6 +155,11 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         return resultSet.next();
     }
 
+    /**
+     * retrieve an appointment that is within 15 minutes of user login time.
+     * @return Appointment within 15 minutes of current time or null if no appointment
+     * @throws SQLException throws from invalid values in SQL command
+     */
     @Override
     public Appointment getUpcomingAppointment() throws SQLException {
         ZonedDateTime now = ZonedDateTime.now();
@@ -195,10 +196,9 @@ public class AppointmentDAOImpl implements AppointmentDAO {
      * @param month month of appointment to retrieve
      * @param year year of appointment to retrieve
      * @return observable list of appointments to be used in fxml components
-     * @throws SQLException thrown when invalid SQL commands used
      */
     @Override
-    public ObservableList<Appointment> getAppointmentsByMonthYear(int month, int year) throws SQLException {
+    public ObservableList<Appointment> getAppointmentsByMonthYear(int month, int year)  {
         return appointments.filtered(a -> TimeUtil.checkMonthYear(a.getStart(), month, year));
     }
 
@@ -206,13 +206,17 @@ public class AppointmentDAOImpl implements AppointmentDAO {
      * retrieves appointments with start date during a week specified by `selectedWeekStartDate`
      * @param selectedWeekStartDate String representing the starting date's week formatted as `yyyy-MM-dd`
      * @return observable list of appointments to be used in fxml components
-     * @throws SQLException thrown by invalid SQL commands
      */
     @Override
-    public ObservableList<Appointment> getAppointmentsByWeek(String selectedWeekStartDate) throws SQLException {
+    public ObservableList<Appointment> getAppointmentsByWeek(String selectedWeekStartDate)  {
         return appointments.filtered(a -> TimeUtil.checkWeek(a.getStart(), selectedWeekStartDate));
     }
 
+    /**
+     * finds the next available ID for Appointment table
+     * @return the id as an int
+     * @throws SQLException from invalid SQL syntax
+     */
     @Override
     public int getNextId() throws SQLException {
         String sql = "SELECT MAX(Appointment_ID) + 1 AS next_id FROM Appointments";
@@ -229,11 +233,21 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         }
     }
 
+    /**
+     * returns a _distinct_ list of Type names from all appointments
+     * @return the list of Types (string)
+     */
     @Override
     public ObservableList<String> getUniqueTypeNames() {
         return appointments.stream().map(Appointment::getType).distinct().collect(Collectors.toCollection(FXCollections::observableArrayList));
     }
 
+    /**
+     * gets all appointments whose type matches the parameter `type`
+     * @param type type of appointment to retrieve
+     * @return List of appointments
+     * @throws SQLException throws from `getAllAppointments()` call
+     */
     @Override
     public ObservableList<Appointment> getAppointmentsByType(String type) throws SQLException {
         if (appointments.size() == 0) {
@@ -242,6 +256,12 @@ public class AppointmentDAOImpl implements AppointmentDAO {
        return appointments.stream().filter(a -> a.getType().equals(type)).collect(Collectors.toCollection(FXCollections::observableArrayList));
     }
 
+    /**
+     * returns a list of appointments for a contact specified by `selectedContact`
+     * @param selectedContact the contact to look for appointments for
+     * @return list of contact's appointments
+     * @throws SQLException thrown by `getAllAppointments()`
+     */
     @Override
     public ObservableList<Appointment> getAllContactAppointments(Contact selectedContact) throws SQLException {
         if (appointments.size() == 0) {
@@ -253,8 +273,9 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     /**
      * fills the `appointments` class attribute with a specified ResultSet containing appointments to add.
      * @param result ResultSet to retrieve appointments from
+     * @throws SQLException thrown if invalid retrieval from ResultSet
      */
-    private void fillAppointments(ResultSet result) {
+    private void fillAppointments(ResultSet result) throws SQLException {
         try {
             Appointment appointmentResult;
             while (result.next()) {
@@ -276,7 +297,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
                 appointments.add(appointmentResult);
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            throw e;
         }
     }
 }

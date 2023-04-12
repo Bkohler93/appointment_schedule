@@ -3,6 +3,10 @@ package com.example.appointment_schedule.model;
 
 import java.sql.Timestamp;
 
+/**
+ * model class for the Country entity from database. Includes matching fields from database schema and getters/setters
+ * @author Brett Kohler
+ */
 public class Country {
     private int id;
     private String name;

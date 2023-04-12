@@ -6,9 +6,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 
+/**
+ * Class to maintain DB connection. Opens and closes the connection, and exposes the connection for queries
+ * @author Brett Kohler
+ */
 public class DBConnection {
     public static Connection connection;  // Connection Interface
 
+    /**
+     * opens database connection
+     */
     public static void openConnection()
     {
         try {
@@ -27,6 +34,9 @@ public class DBConnection {
         }
     }
 
+    /**
+     * closes connection
+     */
     public static void closeConnection() {
         try {
             connection.close();
