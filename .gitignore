@@ -9,6 +9,9 @@
 .idea/**/shelf
 login_activity.txt
 
+# javadoc
+javadoc/*
+
 # AWS User-specific
 .idea/**/aws.xml
 

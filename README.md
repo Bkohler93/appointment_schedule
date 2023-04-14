@@ -33,3 +33,8 @@ The additional report lists the total number of appointments scheduled for a sel
 ## Dependencies
 mysql-connector-8.0.32
 javafx 17.0.6
+
+## Lambda Locations
+The documentation (index.html) can be found in the javadoc directory in the top level directory of the project.
+Lambdas can be found in the AppointmentScheduleController, ContactDAOImpl, LoginController, CustomerListController,  
+and the CustomerController.
