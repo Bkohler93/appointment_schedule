@@ -24,6 +24,9 @@ Now launch the application by hitting the green play symbol. User 'test' and pas
 In the default database the first appointments are scheduled in 2020, and the program initializes to the current month in the schedule for appointments. 
 Navigate to the default appointments by navigating with the '<' symbol next to the current Month/Year near the top of the window.
 
+The application's login window can be viewed in French as well. Set the system default language to French (France) fr_FR
+in order to view the page in French.
+
 ## Additional Report
 The additional report lists the total number of appointments scheduled for a selected country.
 

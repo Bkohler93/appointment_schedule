@@ -1,6 +1,7 @@
 package com.example.appointment_schedule.localization;
 
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -20,13 +21,17 @@ public class Localization {
      */
     public static void initialize() {
         try {
-            rb = ResourceBundle.getBundle("localization/Nat", Locale.getDefault());
+            rb = ResourceBundle.getBundle("com/example/appointment_schedule/Nat", Locale.getDefault());
             if (Locale.getDefault().getLanguage().equals("fr")) {
                 System.out.println("Application language set to French");
                 isActive = true;
-            }        } catch (MissingResourceException e) {
+            } else {
+                isActive = false;
+                System.out.println("Application language set to English");
+            }
+        } catch (MissingResourceException e) {
             isActive = false;
-            System.out.println("Application language set to English");
+            System.out.println("Unable to get Resource bundle\t" + e);
         }
     }
 
