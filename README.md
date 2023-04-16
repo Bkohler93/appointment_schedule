@@ -5,7 +5,8 @@ to schedule and view appointments for their customers.
 
 Author: Brett Kohler
 Contact Information: bkohle9@wgu.edu
-Date: 04/13/2023
+Date: 04/16/2023
+Version: 2
 
 Built using IntelliJ IDEA 2022.3.3 (Community Edition), Java Development Kit 17.0.6, and JavaFX-SDK 17.0.6.
 
