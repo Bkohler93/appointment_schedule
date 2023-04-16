@@ -24,7 +24,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -34,9 +33,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -49,8 +46,6 @@ public class AppointmentController implements Initializable {
 
     private Customer customer;
     private Appointment appointment;
-    private Timestamp createTimestamp;
-    private Timestamp updateTimestamp;
     private final ContactDAO contactDAO = new ContactDAOImpl();
     private final AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
     private final CustomerDAO customerDAO = new CustomerDAOImpl();
@@ -63,11 +58,11 @@ public class AppointmentController implements Initializable {
     @FXML
     private DatePicker startDatePicker;
     @FXML
-    private ComboBox<String> startTimeComboBox;
+    private ComboBox<LocalTime> startTimeComboBox;
     @FXML
     private DatePicker endDatePicker;
     @FXML
-    private ComboBox<String> endTimeComboBox;
+    private ComboBox<LocalTime> endTimeComboBox;
     @FXML
     private TextField typeTextField;
     @FXML
@@ -115,10 +110,23 @@ public class AppointmentController implements Initializable {
      */
     private void fillForm() throws SQLException {
 
+        // set ID combo boxes with names instead of int IDs
         contactIdComboBox.setItems(contactDAO.getAllContacts().stream().map(Contact::getName).collect(Collectors.toCollection(FXCollections::observableArrayList)));
         userIdComboBox.setItems(userDAO.getAllUsers().stream().map(User::getUserName).collect(Collectors.toCollection(FXCollections::observableArrayList)));
         customerIdComboBox.setItems(customerDAO.getAllCustomers().stream().map(Customer::getName).collect(Collectors.toCollection(FXCollections::observableArrayList)));
         idTextField.setDisable(true);
+
+        // set up TimeComboBoxes
+        startTimeComboBox.setPromptText("Select a time");
+        endTimeComboBox.setPromptText("Select a time");
+
+        // fill in TimeComboBoxes with correct time intervals
+        for (int hours = 0; hours < 24; hours++) {
+            for (int minutes = 0; minutes < 60; minutes += 15) {
+                startTimeComboBox.getItems().add(LocalTime.of(hours, minutes));
+                endTimeComboBox.getItems().add(LocalTime.of(hours, minutes));
+            }
+        }
 
         // modifying a customer's appointment
         if (customer != null && appointment != null) {
@@ -137,13 +145,15 @@ public class AppointmentController implements Initializable {
             contactIdComboBox.setDisable(true);
             userIdComboBox.setDisable(true);
 
-            //TODO select startDatePicker appointment value
+            Timestamp startTimestamp = appointment.getStart();
+            LocalDateTime startLDT = startTimestamp.toLocalDateTime();
+            startDatePicker.setValue(startLDT.toLocalDate());
+            startTimeComboBox.getSelectionModel().select(startLDT.toLocalTime());
 
-            //TODO select startTimeComboBox appointment value
-
-            //TODO select endDatePicker appointment value
-
-            //TODO select startTimeComboBox appointment value
+            Timestamp endTimestamp = appointment.getEnd();
+            LocalDateTime endLDT = endTimestamp.toLocalDateTime();
+            endDatePicker.setValue(endLDT.toLocalDate());
+            endTimeComboBox.getSelectionModel().select(endLDT.toLocalTime());
         }
 
         // fill form fields when form is used for specific customer but no specific appointment (Adding an appointment for
@@ -167,13 +177,15 @@ public class AppointmentController implements Initializable {
             contactIdComboBox.getSelectionModel().select(contactDAO.getContactById(appointment.getContactId()).getName());
             typeTextField.setText(appointment.getType());
 
-            //TODO select startDatePicker appointment value
+            Timestamp startTimestamp = appointment.getStart();
+            LocalDateTime startLDT = startTimestamp.toLocalDateTime();
+            startDatePicker.setValue(startLDT.toLocalDate());
+            startTimeComboBox.getSelectionModel().select(startLDT.toLocalTime());
 
-            //TODO select startTimeComboBox appointment value
-
-            //TODO select endDatePicker appointment value
-
-            //TODO select endTimeComboBox appointment value
+            Timestamp endTimestamp = appointment.getEnd();
+            LocalDateTime endLDT = endTimestamp.toLocalDateTime();
+            endDatePicker.setValue(endLDT.toLocalDate());
+            endTimeComboBox.getSelectionModel().select(endLDT.toLocalTime());
 
             // fill ID TextFields
             customerIdComboBox.getSelectionModel().select(customerDAO.getCustomerById(appointment.getCustomerId()).getName());
@@ -239,31 +251,29 @@ public class AppointmentController implements Initializable {
         String createdBy = appointment == null ? Auth.getUser().getCreatedBy() : appointment.getCreatedBy();
         String updatedBy = Auth.getUser().getUserName();
         int customerId = customerDAO.getCustomerIdByName(customerIdComboBox.getValue());
-        int userId = userDAO.getUserIdByName(customerIdComboBox.getValue());
+        int userId = userDAO.getUserIdByName(userIdComboBox.getValue());
         int contactId = contactDAO.getContactIdByName(contactIdComboBox.getValue());
 
-        //TODO retrieve StartDate and EndDate from startDatePicker/endDatePicker
+        // generate create/update timestamps
+        Timestamp createTimestamp = appointment == null ? TimeUtil.UTCTimestampNow() : appointment.getCreateDate();
+        Timestamp updateTimestamp = TimeUtil.UTCTimestampNow();
 
-        //TODO retrieve startTime and endTime from startTimeComboBox/endTimeComboBox
+        // generate start timestamp in UTC and EST
+        LocalDate startDate = startDatePicker.getValue();
+        LocalTime startTime = startTimeComboBox.getValue();
+        ZonedDateTime startZDT = startDate.atTime(startTime).atZone(ZoneId.systemDefault());
+        Timestamp start = TimeUtil.zonedToUTCTimestamp(startZDT);
+        Timestamp startEST = TimeUtil.zonedToESTTimestamp(startZDT);
 
-        //TODO convert both into Timestamps
-        Timestamp start = Timestamp.from(LocalDateTime.now().toInstant(ZoneOffset.UTC));
-        Timestamp end = Timestamp.from(LocalDateTime.now().toInstant(ZoneOffset.UTC));
-
-        //TODO use TimeUtil.fromLocalTimestampToESTTimestamp(Timestamp startDateTime) to create
-        //TODO EST timestamp
-        Timestamp startEST;
-
-        //TODO use TimeUtil.fromLocalTimestampToESTTimestamp(Timestamp endDateTime) to create
-        //TODO EST timestamp
-        Timestamp endEST;
-
-        //TODO convert EST Timestamps into String startTimeEST / endTimeEST
-        String startTimeEST = "09:00:00";
-        String endTimeEST = "09:30:00";
+        // generate end timestamp in UTC and EST
+        LocalDate endDate = endDatePicker.getValue();
+        LocalTime endTime = endTimeComboBox.getValue();
+        ZonedDateTime endZDT = endDate.atTime(endTime).atZone(ZoneId.systemDefault());
+        Timestamp end = TimeUtil.zonedToUTCTimestamp(endZDT);
+        Timestamp endEST = TimeUtil.zonedToESTTimestamp(endZDT);
 
         // check if proposed appointment times conflict with business hours
-        if (TimeUtil.hasConflictingTimes(Time.valueOf(startTimeEST), Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
+        if (TimeUtil.hasConflictingTimes(Time.valueOf(startEST.toLocalDateTime().toLocalTime()), Time.valueOf(endEST.toLocalDateTime().toLocalTime()), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
             FxUtil.displayInfoDisplayText("One or more proposed appointment times are outside of business hours (8am-10pm EST).", true, infoDisplayText);
             return;
         }

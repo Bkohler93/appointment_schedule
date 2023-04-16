@@ -20,6 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -29,9 +30,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -50,6 +49,16 @@ public class AppointmentScheduleController implements Initializable {
     private int selectedMonth;
     private int selectedYear;
     private String selectedWeekStartDate;
+    @FXML
+    private VBox formContainerVBox;
+    @FXML
+    private DatePicker adjustStartDatePicker;
+    @FXML
+    private ComboBox<LocalTime> adjustStartTimeComboBox;
+    @FXML
+    private DatePicker adjustEndDatePicker;
+    @FXML
+    private ComboBox<LocalTime> adjustEndTimeComboBox;
     @FXML
     private Button adjustAppointmentSaveButton;
     @FXML
@@ -72,14 +81,6 @@ public class AppointmentScheduleController implements Initializable {
     private Button cancelButton;
     @FXML
     private Text infoDisplayText;
-    @FXML
-    private TextField dateStartInputTextField;
-    @FXML
-    private TextField timeStartInputTextField;
-    @FXML
-    private TextField dateEndInputTextField;
-    @FXML
-    private TextField timeEndInputTextField;
     @FXML
     private Label selectedTimeLabel;
     @FXML
@@ -138,6 +139,7 @@ public class AppointmentScheduleController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setUpTableValues();
         checkForUpcomingAppointments();
+        FxUtil.applyEventHandlersToTextFields(formContainerVBox, infoDisplayText);
         try {
             fillFormFields();
         } catch (SQLException e) {
@@ -154,6 +156,30 @@ public class AppointmentScheduleController implements Initializable {
         byMonthReportYearSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 displayNumberOfAppointmentsByMonthYear();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        typeReportComboBox.setOnAction(event -> {
+            try {
+                displayNumberOfAppointmentsByType();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        byMonthReportMonthComboBox.setOnAction(event -> {
+            try {
+                displayNumberOfAppointmentsByMonthYear();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        byCountryReportComboBox.setOnAction(event -> {
+            try {
+                displayNumberOfAppointmentsByCountry();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -221,12 +247,6 @@ public class AppointmentScheduleController implements Initializable {
            selectAppointmentFromTableView());
         appointmentTableView.setOnKeyPressed(event ->
             selectAppointmentFromTableView());
-
-        // handle keystrokes when user types in the TextFields for adjusting appointment time
-        timeStartInputTextField.setOnKeyTyped(keyEvent -> checkForValidAdjustmentDateTimes());
-        timeEndInputTextField.setOnKeyTyped(keyEvent ->  checkForValidAdjustmentDateTimes());
-        dateStartInputTextField.setOnKeyTyped(keyEvent -> checkForValidAdjustmentDateTimes());
-        dateEndInputTextField.setOnKeyTyped(keyEvent ->  checkForValidAdjustmentDateTimes());
     }
 
     /**
@@ -292,6 +312,21 @@ public class AppointmentScheduleController implements Initializable {
         });
         customerIdCol.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         userIdCol.setCellValueFactory(new PropertyValueFactory<>("userId"));
+
+        // set up TimeComboBoxes
+        adjustStartTimeComboBox.setPromptText("Select a time");
+        adjustEndTimeComboBox.setPromptText("Select a time");
+
+        // fill in TimeComboBoxes with correct time intervals
+        for (int hours = 0; hours < 24; hours++) {
+            for (int minutes = 0; minutes < 60; minutes += 15) {
+                adjustStartTimeComboBox.getItems().add(LocalTime.of(hours, minutes));
+                adjustEndTimeComboBox.getItems().add(LocalTime.of(hours, minutes));
+            }
+        }
+
+        //disable buttons at start
+        adjustAppointmentSaveButton.setDisable(true);
     }
 
     /**
@@ -299,7 +334,7 @@ public class AppointmentScheduleController implements Initializable {
      */
     private void selectAppointmentFromTableView() {
         // update form actions based on currently selected appointment
-        adjustAppointmentSaveButton.setDisable(true);
+        adjustAppointmentSaveButton.setDisable(false);
         clearInfoDisplayText(infoDisplayText);
         cancelButton.setDisable(false);
 
@@ -309,54 +344,23 @@ public class AppointmentScheduleController implements Initializable {
         // fill in adjustment times if appointment is selected
         if (appointment != null) {
 
-            // retrieve and format times
+            // retrieve and set adjustment start date/time
             Timestamp timestampStart = appointment.getStart();
+            LocalDateTime startLDT = timestampStart.toLocalDateTime();
+            LocalDate startDate = startLDT.toLocalDate();
+            LocalTime startTime = startLDT.toLocalTime();
+            System.out.println("setting date as: " + startDate.toString() + "\t time as: " + startTime.toString());
+            adjustStartDatePicker.setValue(startDate);
+            adjustStartTimeComboBox.setValue(startTime);
+
+            // retrieve and set adjustment end date/time
             Timestamp timestampEnd = appointment.getEnd();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            String dateStart = dateFormat.format(timestampStart);
-            String dateEnd = dateFormat.format(timestampEnd);
-            String timeStart = timeFormat.format(timestampStart);
-            String timeEnd = timeFormat.format(timestampEnd);
-
-            // fill in adjustment TextFields with formatted times
-            dateStartInputTextField.setText(dateStart);
-            timeStartInputTextField.setText(timeStart);
-            dateEndInputTextField.setText(dateEnd);
-            timeEndInputTextField.setText(timeEnd);
+            LocalDateTime endLDT = timestampEnd.toLocalDateTime();
+            LocalDate endDate = endLDT.toLocalDate();
+            LocalTime endTime = endLDT.toLocalTime();
+            adjustEndDatePicker.setValue(endDate);
+            adjustEndTimeComboBox.setValue(endTime);
         }
-    }
-
-    /**
-     * determines if currently entered text in appointment adjustment fields are valid and enables the save button
-     * if they are valid, or disables it if any of the fields are invalid.
-     */
-    private void checkForValidAdjustmentDateTimes() {
-
-        //clear any display text in InfoDisplay Text
-        clearInfoDisplayText(infoDisplayText);
-
-        // select the currently selected appointment
-        Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
-        if (appointment == null) { return; }
-
-        // retrieve text from TextFields
-        String dateStart = dateStartInputTextField.getText();
-        String timeStart = timeStartInputTextField.getText();
-        String dateEnd = dateEndInputTextField.getText();
-        String timeEnd = timeEndInputTextField.getText();
-
-        if (!(TimeUtil.isValidDate(dateStart) && TimeUtil.isValidTime(timeStart) && TimeUtil.isValidDate(dateEnd) && TimeUtil.isValidTime(timeEnd))) {
-            adjustAppointmentSaveButton.setDisable(true);
-            return;
-        }
-
-        // create timestamps from valid time values
-        Timestamp timestampStart = TimeUtil.formValueToTimestamp(dateStart, timeStart);
-        Timestamp timestampEnd = TimeUtil.formValueToTimestamp(dateEnd, timeEnd);
-
-        // disable button if all adjust date/times are same as currently selected appointment.
-        adjustAppointmentSaveButton.setDisable(timestampStart.equals(appointment.getStart()) && timestampEnd.equals(appointment.getEnd()));
     }
 
     /**
@@ -495,10 +499,10 @@ public class AppointmentScheduleController implements Initializable {
      * clears Time entry text fields
      */
     private void clearDateTimeInputTextFields() {
-        timeStartInputTextField.setText("");
-        timeEndInputTextField.setText("");
-        dateStartInputTextField.setText("");
-        dateEndInputTextField.setText("");
+        adjustEndTimeComboBox.getSelectionModel().clearSelection();
+        adjustStartTimeComboBox.getSelectionModel().clearSelection();
+        adjustStartDatePicker.setValue(null);
+        adjustEndDatePicker.setValue(null);
     }
 
     /**
@@ -578,25 +582,22 @@ public class AppointmentScheduleController implements Initializable {
     @FXML
     public void saveAdjustedAppointmentDateTime() throws SQLException {
 
-        // retrieve time text from form
-        String dateStart = dateStartInputTextField.getText();
-        String timeStart = timeStartInputTextField.getText();
-        String dateEnd = dateEndInputTextField.getText();
-        String timeEnd = timeEndInputTextField.getText();
+        // retrieve start date/time
+        LocalDate startDate = adjustStartDatePicker.getValue();
+        LocalTime startTime = adjustStartTimeComboBox.getValue();
+        ZonedDateTime startZDT = startDate.atTime(startTime).atZone(ZoneId.systemDefault());
+        Timestamp startUTC = TimeUtil.zonedToUTCTimestamp(startZDT);
+        Timestamp startEST = TimeUtil.zonedToESTTimestamp(startZDT);
 
-        // convert locally formatted times to UTC timestamps.
-        Timestamp timestampStart = TimeUtil.formValueToUTCTimestamp(dateStart, timeStart);
-        Timestamp timestampEnd = TimeUtil.formValueToUTCTimestamp(dateEnd, timeEnd);
-
-        // convert UTC timestamps to EST formatted times for checking against business hours
-        Timestamp startEST = TimeUtil.formValueToESTTimestamp(dateStart, timeStart);
-        Timestamp endEST = TimeUtil.formValueToESTTimestamp(dateEnd, timeEnd);
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        String startTimeEST = timeFormat.format(startEST.getTime());
-        String endTimeEST = timeFormat.format(endEST.getTime());
+        // retrieve end date/time
+        LocalDate endDate = adjustEndDatePicker.getValue();
+        LocalTime endTime = adjustEndTimeComboBox.getValue();
+        ZonedDateTime endZDT = endDate.atTime(endTime).atZone(ZoneId.systemDefault());
+        Timestamp endUTC = TimeUtil.zonedToUTCTimestamp(endZDT);
+        Timestamp endEST = TimeUtil.zonedToESTTimestamp(endZDT);
 
         // use formatted EST times to check if valid times and within business hours. Returns from function if invalid
-        if (TimeUtil.hasConflictingTimes(Time.valueOf(startTimeEST), Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
+        if (TimeUtil.hasConflictingTimes(Time.valueOf(startEST.toLocalDateTime().toLocalTime()), Time.valueOf(endEST.toLocalDateTime().toLocalTime()), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {
             FxUtil.displayInfoDisplayText("One or more proposed appointment times are outside of business hours (8am-10pm EST).", true, infoDisplayText);
             return;
         }
@@ -604,12 +605,12 @@ public class AppointmentScheduleController implements Initializable {
         // select currently selected appointment from TableView
         Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
         if (appointment == null) {
-            if (appointmentDAO.hasOverlappingAppointments(timestampStart, timestampEnd)) {
+            if (appointmentDAO.hasOverlappingAppointments(startUTC, endUTC)) {
                 FxUtil.displayInfoDisplayText("The proposed appointment time conflicts with other appointments.", true, infoDisplayText);
                 return;
             }
         } else {
-            if (appointmentDAO.hasOverlappingAppointments(timestampStart, timestampEnd, appointment)) {
+            if (appointmentDAO.hasOverlappingAppointments(startUTC, endUTC, appointment)) {
                 FxUtil.displayInfoDisplayText("The proposed appointment time conflicts with other appointments.", true, infoDisplayText);
                 return;
             }
@@ -618,7 +619,7 @@ public class AppointmentScheduleController implements Initializable {
         // create new appointment object
         assert appointment != null;
         Appointment updatedAppointment = new Appointment(appointment.getId(), appointment.getTitle(), appointment.getDescription(), appointment.getLocation(), appointment.getType(),
-                timestampStart, timestampEnd, appointment.getCreateDate(), appointment.getCreatedBy(), appointment.getLastUpdate(), appointment.getLastUpdatedBy(), appointment.getCustomerId(),
+                startUTC, endUTC, appointment.getCreateDate(), appointment.getCreatedBy(), appointment.getLastUpdate(), appointment.getLastUpdatedBy(), appointment.getCustomerId(),
                 appointment.getUserId(), appointment.getContactId());
 
         // send updated appointment

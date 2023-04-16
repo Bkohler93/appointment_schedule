@@ -182,6 +182,17 @@ public class TimeUtil {
     }
 
     /**
+     * converts a ZonedDateTime to EST timestamp
+     * @param now time to convert
+     * @return Timestamp in UTC
+     */
+    public static Timestamp zonedToESTTimestamp(ZonedDateTime now) {
+        ZonedDateTime nowEST = now.withZoneSameInstant(ZoneId.of("America/New_York"));
+        LocalDateTime nowESTLocal = nowEST.toLocalDateTime();
+        return Timestamp.valueOf(nowESTLocal);
+    }
+
+    /**
      * return the current year
      * @return the year
      */

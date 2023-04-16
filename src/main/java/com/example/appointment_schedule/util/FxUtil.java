@@ -6,15 +6,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -53,7 +52,12 @@ public class FxUtil {
     public static void applyEventHandlersToTextFields(Node node, Text infoDisplayText) {
         if (node instanceof TextField textField) {
             textField.setOnKeyTyped(event -> FxUtil.clearInfoDisplayText(infoDisplayText));
-        } else if (node instanceof Parent parent) {
+        } else if (node instanceof DatePicker datePicker) {
+            datePicker.setOnAction(event -> FxUtil.clearInfoDisplayText(infoDisplayText));
+        } else if (node instanceof ComboBox comboBox) {
+            comboBox.setOnAction(event -> FxUtil.clearInfoDisplayText(infoDisplayText));
+        }
+        else if (node instanceof Parent parent) {
             for (Node child : parent.getChildrenUnmodifiable()) {
                 applyEventHandlersToTextFields(child, infoDisplayText);
             }
