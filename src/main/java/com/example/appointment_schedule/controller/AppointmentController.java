@@ -1,13 +1,19 @@
 package com.example.appointment_schedule.controller;
 
 import com.example.appointment_schedule.Constants;
+import com.example.appointment_schedule.auth.Auth;
 import com.example.appointment_schedule.dao.appointment.AppointmentDAO;
 import com.example.appointment_schedule.dao.appointment.AppointmentDAOImpl;
 import com.example.appointment_schedule.dao.contact.ContactDAO;
 import com.example.appointment_schedule.dao.contact.ContactDAOImpl;
+import com.example.appointment_schedule.dao.customer.CustomerDAO;
+import com.example.appointment_schedule.dao.customer.CustomerDAOImpl;
+import com.example.appointment_schedule.dao.user.UserDAO;
+import com.example.appointment_schedule.dao.user.UserDAOImpl;
 import com.example.appointment_schedule.model.Appointment;
 import com.example.appointment_schedule.model.Contact;
 import com.example.appointment_schedule.model.Customer;
+import com.example.appointment_schedule.model.User;
 import com.example.appointment_schedule.util.FxUtil;
 import com.example.appointment_schedule.util.TimeUtil;
 import javafx.collections.FXCollections;
@@ -16,7 +22,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -27,6 +35,8 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -36,24 +46,30 @@ import java.util.stream.Collectors;
  */
 public class AppointmentController implements Initializable {
 
+
     private Customer customer;
     private Appointment appointment;
+    private Timestamp createTimestamp;
+    private Timestamp updateTimestamp;
     private final ContactDAO contactDAO = new ContactDAOImpl();
     private final AppointmentDAO appointmentDAO = new AppointmentDAOImpl();
+    private final CustomerDAO customerDAO = new CustomerDAOImpl();
+    private final UserDAO userDAO = new UserDAOImpl();
+
+    @FXML
+    private ComboBox<String> customerIdComboBox;
+    @FXML
+    private ComboBox<String> userIdComboBox;
+    @FXML
+    private DatePicker startDatePicker;
+    @FXML
+    private ComboBox<String> startTimeComboBox;
+    @FXML
+    private DatePicker endDatePicker;
+    @FXML
+    private ComboBox<String> endTimeComboBox;
     @FXML
     private TextField typeTextField;
-    @FXML
-    private TextField startDateTextField;
-    @FXML
-    private TextField startTimeTextField;
-    @FXML
-    private TextField endDateTextField;
-    @FXML
-    private TextField endTimeTextField;
-    @FXML
-    private TextField customerIdTextField;
-    @FXML
-    private TextField userIdTextField;
     @FXML
     private Text appointmentFormTitleText;
     @FXML
@@ -65,19 +81,7 @@ public class AppointmentController implements Initializable {
     @FXML
     private TextField locationTextField;
     @FXML
-    private ComboBox<String> contactComboBox;
-    @FXML
-    private TextField updatedByTextField;
-    @FXML
-    private TextField updateTimeTextField;
-    @FXML
-    private TextField updateDateTextField;
-    @FXML
-    private TextField createdByTextField;
-    @FXML
-    private TextField createTimeTextField;
-    @FXML
-    private TextField createDateTextField;
+    private ComboBox<String> contactIdComboBox;
     @FXML
     private Text infoDisplayText;
     @FXML
@@ -111,7 +115,9 @@ public class AppointmentController implements Initializable {
      */
     private void fillForm() throws SQLException {
 
-        contactComboBox.setItems(contactDAO.getAllContacts().stream().map(Contact::getName).collect(Collectors.toCollection(FXCollections::observableArrayList)));
+        contactIdComboBox.setItems(contactDAO.getAllContacts().stream().map(Contact::getName).collect(Collectors.toCollection(FXCollections::observableArrayList)));
+        userIdComboBox.setItems(userDAO.getAllUsers().stream().map(User::getUserName).collect(Collectors.toCollection(FXCollections::observableArrayList)));
+        customerIdComboBox.setItems(customerDAO.getAllCustomers().stream().map(Customer::getName).collect(Collectors.toCollection(FXCollections::observableArrayList)));
         idTextField.setDisable(true);
 
         // modifying a customer's appointment
@@ -123,42 +129,21 @@ public class AppointmentController implements Initializable {
             titleTextField.setText(appointment.getTitle());
             descriptionTextField.setText(appointment.getDescription());
             locationTextField.setText(appointment.getLocation());
-            contactComboBox.getSelectionModel().select(contactDAO.getContactById(appointment.getContactId()).getName());
+            contactIdComboBox.getSelectionModel().select(contactDAO.getContactById(appointment.getContactId()).getName());
+            customerIdComboBox.getSelectionModel().select(customerDAO.getCustomerById(appointment.getCustomerId()).getName());
+            userIdComboBox.getSelectionModel().select(Auth.getUser().getUserName());
             typeTextField.setText(appointment.getType());
-            createdByTextField.setText(appointment.getCreatedBy());
-            customerIdTextField.setText(Integer.toString(customer.getId()));
-            customerIdTextField.setDisable(true);
-            userIdTextField.setText(Integer.toString(appointment.getUserId()));
+            customerIdComboBox.setDisable(true);
+            contactIdComboBox.setDisable(true);
+            userIdComboBox.setDisable(true);
 
-            // retrieve and format appointment start/end times
-            Timestamp timestampStart = appointment.getStart();
-            Timestamp timestampEnd = appointment.getEnd();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            String dateStart = dateFormat.format(timestampStart);
-            String dateEnd = dateFormat.format(timestampEnd);
-            String timeStart = timeFormat.format(timestampStart);
-            String timeEnd = timeFormat.format(timestampEnd);
+            //TODO select startDatePicker appointment value
 
-            // fill Start and End Date/Time TextFields
-            startDateTextField.setText(dateStart);
-            startTimeTextField.setText(timeStart);
-            endDateTextField.setText(dateEnd);
-            endTimeTextField.setText(timeEnd);
+            //TODO select startTimeComboBox appointment value
 
-            // fill Create Date/Time TextFields
-            Timestamp createdTimestamp = appointment.getCreateDate();
-            String createdDate = dateFormat.format(createdTimestamp);
-            String createdTime = timeFormat.format(createdTimestamp);
-            createDateTextField.setText(createdDate);
-            createTimeTextField.setText(createdTime);
+            //TODO select endDatePicker appointment value
 
-            // retrieve and fill LastUpdate Date/Time TextFields
-            Timestamp updatedTimestamp = appointment.getLastUpdate();
-            String updatedDate = dateFormat.format(updatedTimestamp);
-            String updatedTime = timeFormat.format(updatedTimestamp);
-            updateDateTextField.setText(updatedDate);
-            updateTimeTextField.setText(updatedTime);
+            //TODO select startTimeComboBox appointment value
         }
 
         // fill form fields when form is used for specific customer but no specific appointment (Adding an appointment for
@@ -166,8 +151,8 @@ public class AppointmentController implements Initializable {
         else if (appointment == null && customer != null) {
             appointmentFormTitleText.setText("Add Appointment For " + customer.getName());
             idTextField.setText(Integer.toString(appointmentDAO.getNextId()));
-            customerIdTextField.setText(Integer.toString(customer.getId()));
-            customerIdTextField.setDisable(true);
+            customerIdComboBox.getSelectionModel().select(customerDAO.getCustomerById(appointment.getCustomerId()).getName());
+            customerIdComboBox.setDisable(true);
         }
 
         // fill form fields when form is used for specific appointment  (Modifying an existing appointment)
@@ -179,40 +164,20 @@ public class AppointmentController implements Initializable {
             titleTextField.setText(appointment.getTitle());
             descriptionTextField.setText(appointment.getDescription());
             locationTextField.setText(appointment.getLocation());
-            contactComboBox.getSelectionModel().select(contactDAO.getContactById(appointment.getContactId()).getName());
+            contactIdComboBox.getSelectionModel().select(contactDAO.getContactById(appointment.getContactId()).getName());
             typeTextField.setText(appointment.getType());
 
-            // retrieve and format TextFields that require Time/Date
-            Timestamp timestampStart = appointment.getStart();
-            Timestamp timestampEnd = appointment.getEnd();
-            Timestamp createdTimestamp = appointment.getCreateDate();
-            Timestamp updatedTimestamp = appointment.getLastUpdate();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            String dateStart = dateFormat.format(timestampStart);
-            String dateEnd = dateFormat.format(timestampEnd);
-            String timeStart = timeFormat.format(timestampStart);
-            String timeEnd = timeFormat.format(timestampEnd);
-            String createdDate = dateFormat.format(createdTimestamp);
-            String createdTime = timeFormat.format(createdTimestamp);
-            String updatedDate = dateFormat.format(updatedTimestamp);
-            String updatedTime = timeFormat.format(updatedTimestamp);
+            //TODO select startDatePicker appointment value
 
-            // fill Time TextFields
-            startDateTextField.setText(dateStart);
-            startTimeTextField.setText(timeStart);
-            endDateTextField.setText(dateEnd);
-            endTimeTextField.setText(timeEnd);
-            createDateTextField.setText(createdDate);
-            createTimeTextField.setText(createdTime);
-            createdByTextField.setText(appointment.getCreatedBy());
-            updateDateTextField.setText(updatedDate);
-            updateTimeTextField.setText(updatedTime);
-            updatedByTextField.setText(appointment.getLastUpdatedBy());
+            //TODO select startTimeComboBox appointment value
+
+            //TODO select endDatePicker appointment value
+
+            //TODO select endTimeComboBox appointment value
 
             // fill ID TextFields
-            customerIdTextField.setText(Integer.toString(appointment.getCustomerId()));
-            userIdTextField.setText(Integer.toString(appointment.getUserId()));
+            customerIdComboBox.getSelectionModel().select(customerDAO.getCustomerById(appointment.getCustomerId()).getName());
+            userIdComboBox.getSelectionModel().select(Auth.getUser().getUserName());
         }
 
         // adding an appointment (No specified appointment or customer)
@@ -271,30 +236,31 @@ public class AppointmentController implements Initializable {
         String description = descriptionTextField.getText();
         String location = locationTextField.getText();
         String type = typeTextField.getText();
-        String createdBy = createdByTextField.getText();
-        String updatedBy = updatedByTextField.getText();
-        String startDate = startDateTextField.getText();
-        String startTime = startTimeTextField.getText();
-        String endDate = endDateTextField.getText();
-        String endTime = endTimeTextField.getText();
-        String createDate = createDateTextField.getText();
-        String createTime = createTimeTextField.getText();
-        String updateDate = updateDateTextField.getText();
-        String updateTime = updateTimeTextField.getText();
-        int customerId = Integer.parseInt(customerIdTextField.getText());
-        int userId = Integer.parseInt(userIdTextField.getText());
-        int contactId = contactDAO.getContactIdByName(contactComboBox.getValue());
+        String createdBy = appointment == null ? Auth.getUser().getCreatedBy() : appointment.getCreatedBy();
+        String updatedBy = Auth.getUser().getUserName();
+        int customerId = customerDAO.getCustomerIdByName(customerIdComboBox.getValue());
+        int userId = userDAO.getUserIdByName(customerIdComboBox.getValue());
+        int contactId = contactDAO.getContactIdByName(contactIdComboBox.getValue());
 
-        // convert times to EST to compare with business hours
-        Timestamp start = TimeUtil.formValueToUTCTimestamp(startDate, startTime);
-        Timestamp end = TimeUtil.formValueToUTCTimestamp(endDate, endTime);
-        Timestamp createTimestamp = TimeUtil.formValueToUTCTimestamp(createDate, createTime);
-        Timestamp updateTimestamp = TimeUtil.formValueToUTCTimestamp(updateDate, updateTime);
-        Timestamp startEST = TimeUtil.formValueToESTTimestamp(startDate, startTime);
-        Timestamp endEST = TimeUtil.formValueToESTTimestamp(endDate, endTime);
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        String startTimeEST = timeFormat.format(startEST.getTime());
-        String endTimeEST = timeFormat.format(endEST.getTime());
+        //TODO retrieve StartDate and EndDate from startDatePicker/endDatePicker
+
+        //TODO retrieve startTime and endTime from startTimeComboBox/endTimeComboBox
+
+        //TODO convert both into Timestamps
+        Timestamp start = Timestamp.from(LocalDateTime.now().toInstant(ZoneOffset.UTC));
+        Timestamp end = Timestamp.from(LocalDateTime.now().toInstant(ZoneOffset.UTC));
+
+        //TODO use TimeUtil.fromLocalTimestampToESTTimestamp(Timestamp startDateTime) to create
+        //TODO EST timestamp
+        Timestamp startEST;
+
+        //TODO use TimeUtil.fromLocalTimestampToESTTimestamp(Timestamp endDateTime) to create
+        //TODO EST timestamp
+        Timestamp endEST;
+
+        //TODO convert EST Timestamps into String startTimeEST / endTimeEST
+        String startTimeEST = "09:00:00";
+        String endTimeEST = "09:30:00";
 
         // check if proposed appointment times conflict with business hours
         if (TimeUtil.hasConflictingTimes(Time.valueOf(startTimeEST), Time.valueOf(endTimeEST), Constants.BUSINESS_HOURS_START_EST, Constants.BUSINESS_HOURS_END_EST)) {

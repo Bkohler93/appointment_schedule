@@ -1,6 +1,7 @@
 package com.example.appointment_schedule.dao.customer;
 
 
+import com.example.appointment_schedule.model.Contact;
 import com.example.appointment_schedule.model.Customer;
 import javafx.collections.ObservableList;
 
@@ -16,4 +17,6 @@ public interface CustomerDAO {
     void updateCustomer(Customer customer) throws SQLException;
     void addCustomer(Customer customer) throws SQLException;
     int getNextId() throws SQLException;
+    Customer getCustomerById(int customerId) throws SQLException;
+    int getCustomerIdByName(String value) throws SQLException;
 }

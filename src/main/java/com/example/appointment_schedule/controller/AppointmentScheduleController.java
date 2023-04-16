@@ -138,14 +138,32 @@ public class AppointmentScheduleController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setUpTableValues();
         checkForUpcomingAppointments();
-        fillFormFields();
+        try {
+            fillFormFields();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         fillAppointmentTableView();
+        setOnActionMethods();
+    }
+
+    /**
+     * sets up any lambda expressions to run in response to events on the form
+     */
+    private void setOnActionMethods() {
+        byMonthReportYearSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                displayNumberOfAppointmentsByMonthYear();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
      * sets up form fields with correct values and sets up component functionality
      */
-    private void fillFormFields() {
+    private void fillFormFields() throws SQLException {
         // assign correct status for buttons so that user cannot attempt to cancel an appointment
         // when none is selected and the application starts by viewing appointments by month
         byMonthRadioButton.setSelected(true);
@@ -637,10 +655,14 @@ public class AppointmentScheduleController implements Initializable {
     @FXML
     public void displayNumberOfAppointmentsByMonthYear() throws SQLException {
         String selectedMonth = byMonthReportMonthComboBox.getSelectionModel().getSelectedItem();
-        int month = TimeUtil.monthStringToInt(selectedMonth);
-        int year = byMonthReportYearSpinner.getValue();
-
-        byMonthReportText.setText(Integer.toString(appointmentDAO.getAppointmentsByMonthYear(month, year).size()));
+        int month, year;
+        try {
+            month = TimeUtil.monthStringToInt(selectedMonth);
+            year = byMonthReportYearSpinner.getValue();
+            byMonthReportText.setText(Integer.toString(appointmentDAO.getAppointmentsByMonthYear(month, year).size()));
+        } catch (NullPointerException e) {
+            // do nothing
+        }
     }
 
     /**

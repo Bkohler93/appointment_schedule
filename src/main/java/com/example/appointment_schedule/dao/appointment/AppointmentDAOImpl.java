@@ -238,7 +238,10 @@ public class AppointmentDAOImpl implements AppointmentDAO {
      * @return the list of Types (string)
      */
     @Override
-    public ObservableList<String> getUniqueTypeNames() {
+    public ObservableList<String> getUniqueTypeNames() throws SQLException {
+        if (appointments.size() == 0) {
+            getAllAppointments();
+        }
         return appointments.stream().map(Appointment::getType).distinct().collect(Collectors.toCollection(FXCollections::observableArrayList));
     }
 

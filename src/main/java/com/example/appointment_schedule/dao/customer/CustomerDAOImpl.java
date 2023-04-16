@@ -2,6 +2,7 @@ package com.example.appointment_schedule.dao.customer;
 
 
 import com.example.appointment_schedule.dao.Query;
+import com.example.appointment_schedule.model.Contact;
 import com.example.appointment_schedule.model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +10,7 @@ import javafx.collections.ObservableList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 /**
  * implementation for CustomerDAO to access Customer data from a MySQL database
@@ -131,5 +133,25 @@ public class CustomerDAOImpl implements CustomerDAO{
         } else {
             throw new SQLException("No ID available");
         }
+    }
+
+    @Override
+    public Customer getCustomerById(int customerId) throws SQLException {
+       if (customers.isEmpty()) {
+           getAllCustomers();
+       }
+       Optional<Customer> customerResult = customers.stream().filter(c -> c.getId() == customerId).findFirst();
+
+       return customerResult.orElse(null);
+    }
+
+    @Override
+    public int getCustomerIdByName(String value) throws SQLException {
+       if (customers.isEmpty()) {
+           getAllCustomers();
+       }
+       Optional<Customer> customerResult = customers.stream().filter(c -> c.getName().equals(value)).findFirst();
+
+        return customerResult.map(Customer::getId).orElse(-1);
     }
 }

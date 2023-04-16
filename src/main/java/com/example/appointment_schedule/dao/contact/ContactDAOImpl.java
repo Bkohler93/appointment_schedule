@@ -90,10 +90,9 @@ public class ContactDAOImpl implements ContactDAO{
         if (contacts.isEmpty()) {
             getAllContacts();
         }
-        return contacts
-                .filtered(c -> c.getName().equals(name))
-                .stream().findFirst()
-                .orElseThrow()
-                .getId();
+
+        Optional<Contact> contactResult = contacts.stream().filter(c -> c.getName().equals(name)).findFirst();
+
+        return contactResult.map(Contact::getId).orElse(-1);
     }
 }

@@ -30,7 +30,7 @@ public interface AppointmentDAO {
 
     int getNextId() throws SQLException;
 
-    ObservableList<String> getUniqueTypeNames();
+    ObservableList<String> getUniqueTypeNames() throws SQLException;
 
     ObservableList<Appointment> getAppointmentsByType(String type) throws SQLException;
 
